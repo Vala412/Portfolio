@@ -38,7 +38,9 @@ class Settings(BaseSettings):
     # --- API / security ---
     allowed_origins: str = "*"
     rate_limit: str = "20/minute"
-    max_history_pairs: int = 5
+    # History is resent (uncached) on every turn; 3 pairs is ample context for a
+    # portfolio Q&A bot while keeping recurring input tokens low.
+    max_history_pairs: int = 3
     request_max_chars: int = 2000
 
     # --- Assistant identity ---
@@ -80,7 +82,9 @@ class Settings(BaseSettings):
     # --- Retrieval / chunking ---
     dense_top_k: int = 20
     sparse_top_k: int = 20
-    rerank_top_n: int = 6
+    # Chunks sent to the LLM after reranking. 5 keeps grounding strong for a
+    # small corpus while trimming per-request context tokens.
+    rerank_top_n: int = 5
     chunk_size: int = 300
     chunk_overlap: int = 50
 

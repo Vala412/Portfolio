@@ -78,21 +78,16 @@ class OpenAILLM:
             content = (turn.get("content") or "").strip()
             if content and role in ("user", "assistant"):
                 messages.append({"role": role, "content": content})
+        # The user turn carries only the per-request context + question. All
+        # behavioural instructions live in the (static) system prompt, so we do
+        # not repeat them here — repeating them costs ~150 tokens every request
+        # and, sitting after the dynamic context, can never be prompt-cached.
         messages.append({
             "role": "user",
             "content": (
                 "Retrieved portfolio context:\n"
                 f"{self._format_context(context_chunks)}\n\n"
-                f"Question: {query.strip()}\n\n"
-                "Use the retrieved context above as the source of truth for anything about "
-                f"{self.settings.assistant_name}. Speak about him in the third person. If the "
-                "question is short or terse (e.g. \"best project?\", \"tech stack?\"), read it as a "
-                f"question about {self.settings.assistant_name}'s portfolio. If this is a question "
-                "about him and the context lacks the answer, say so plainly and point to the contact "
-                f"email ({self.settings.contact_email}). If it is a general technology, AI/ML, or "
-                "programming question, answer helpfully from your own knowledge and tie it back to "
-                "his work where relevant. Keep it concise (2-5 sentences) and use Markdown "
-                "formatting when it helps — **bold** the key terms that deserve emphasis."
+                f"Question: {query.strip()}"
             ),
         })
         return messages
