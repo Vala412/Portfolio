@@ -10,7 +10,7 @@
 
   // ---------------------------------------------------------------- DATA
   var projects = [
-    { idx: "01", tag: "RAG", slug: "rag-platform", shot: "Project Visual", name: "RAG Platform", desc: "Multi-chatbot platform — upload PDFs, docs & URLs to build per-bot knowledge bases. GPT-4o grounded on Pinecone retrieval + reranking.",
+    { idx: "01", tag: "RAG", slug: "rag-platform", shot: "Project Visual", img: "assets/proj-rag-platform.png", name: "RAG Platform", desc: "Multi-chatbot platform — upload PDFs, docs & URLs to build per-bot knowledge bases. GPT-4o grounded on Pinecone retrieval + reranking.",
       long: "A production multi-chatbot RAG platform where each user turns their own PDFs, documents and crawled URLs into a per-bot knowledge base — then chats with answers grounded in that context instead of guesswork. Every bot is fully isolated: source content is crawled with BeautifulSoup/Requests, OCR'd to clean markdown with Docling, recursively chunked, and embedded with all-MiniLM-L6-v2 into Pinecone, where a top-3 rerank keeps only the most relevant passages before they ever reach the model. GPT-4o then answers strictly from retrieved context, with prompting tuned to cite what it knows and refuse what it doesn't — so every response stays faithful to that user's own documents rather than the model's training data.",
       points: [
         "Ingests PDFs, docs & URLs — crawled via BeautifulSoup/Requests and OCR'd to markdown with Docling.",
@@ -18,7 +18,7 @@
         "GPT-4o with optimized prompting answers strictly from retrieved context.",
       ],
       tech: ["Python","FastAPI","Pinecone","all-MiniLM-L6-v2","GPT-4o","Docling","BeautifulSoup"] },
-    { idx: "02", tag: "LLM", slug: "medical-transcribe", shot: "Project Visual", name: "Medical Transcribe", desc: "Two-stage LLM pipeline auto-builds structured medical forms via fuzzy (RapidFuzz) + semantic (FAISS) search. ~15s, 60% fewer tokens.",
+    { idx: "02", tag: "LLM", slug: "medical-transcribe", shot: "Project Visual", img: "assets/proj-medical-transcribe.png", name: "Medical Transcribe", desc: "Two-stage LLM pipeline auto-builds structured medical forms via fuzzy (RapidFuzz) + semantic (FAISS) search. ~15s, 60% fewer tokens.",
       long: "An AI medical-transcription system that turns raw records into structured forms automatically — re-architected from a single heavy LLM call into a lean two-stage pipeline that is both faster and dramatically cheaper to run. The first stage extracts medical terms and their permutations; the second maps them onto the correct form fields through a combination of fuzzy matching (RapidFuzz) and semantic search (FAISS), so misspellings and clinical synonyms still land in the right place. The redesign cut end-to-end form generation to ~15 seconds and reduced token usage 60% (25k → 10k per run) without sacrificing accuracy.",
       points: [
         "Two-stage LLM flow extracts medical terms and permutations for matching.",
@@ -37,7 +37,7 @@
       tech: ["Python","TensorFlow/Keras","TensorFlow.js","MediaPipe","OpenCV","scikit-learn","FastAPI","GitHub Actions"],
       demo: "https://vala412.github.io/SignAssistive/translate.html",
       link: "https://github.com/Vala412/SignAssistive" },
-    { idx: "04", tag: "ML", slug: "logsense", shot: "Project Visual", name: "LogSense", desc: "Hybrid log-classification pipeline — Regex + Sentence Transformers + Logistic Regression, with an LLM fallback for ambiguous logs.",
+    { idx: "04", tag: "ML", slug: "logsense", shot: "Project Visual", img: "assets/proj-logsense.png", name: "LogSense", desc: "Hybrid log-classification pipeline — Regex + Sentence Transformers + Logistic Regression, with an LLM fallback for ambiguous logs.",
       long: "A hybrid log-classification pipeline that routes each log line to the cheapest method that can confidently label it, escalating only when necessary. Well-structured, known patterns are caught instantly by regex; everything else is classified from embeddings using Sentence Transformers with a Logistic Regression head; and only genuinely ambiguous or previously unseen logs fall through to an LLM. The result is a tiered system that keeps cost and latency low on the common case while still handling the long tail of messy, unfamiliar logs intelligently.",
       points: [
         "Regex handles known, well-structured patterns instantly.",
