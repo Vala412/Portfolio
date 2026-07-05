@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vatsal Vala — AI / ML Engineer</title>
+<meta name="description" content="Vatsal Vala — AI/ML Engineer. RAG, LLMs & GenAI systems. Production retrieval pipelines, computer vision, and built-with-intent machine learning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 82 68'%3E%3Crect x='-2' y='-2' width='82' height='68' fill='%230b0b0b'/%3E%3Cpolygon points='0,0 15,0 22,36 29,0 44,0 22,64' fill='%23c5f82a'/%3E%3Cpolygon points='34,0 49,0 56,36 63,0 78,0 56,64' fill='%23c5f82a'/%3E%3Crect x='70' y='56' width='8' height='8' fill='%23f2f1ea'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div data-root style="--bg:11,11,11;--fg:242,241,234;--acid:#c5f82a;background:rgb(var(--bg));color:rgb(var(--fg));font-family:'Archivo',Helvetica,Arial,sans-serif;position:relative;min-height:100vh">
+
+  <!-- LOADER (v2: cycling words + column-wipe exit) -->
+  <div data-loader style="position:fixed;inset:0;z-index:9999;color:#f2f1ea;flex-direction:column;justify-content:flex-end;padding:48px">
+    <div class="loader-cols" aria-hidden="true">
+      <div class="loader-col"></div><div class="loader-col"></div><div class="loader-col"></div><div class="loader-col"></div><div class="loader-col"></div>
+    </div>
+    <div class="loader-content" style="position:absolute;top:48px;left:48px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.2em;opacity:.6">VATSAL VALA — PORTFOLIO</div>
+    <div class="loader-content" style="position:absolute;top:48px;right:48px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.2em;opacity:.6">© 2026</div>
+    <div class="loader-content" style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div data-loader-word style="font-family:'Archivo';font-weight:900;font-size:clamp(40px,8vw,120px);line-height:0.9;letter-spacing:-0.04em;text-transform:uppercase">Loading</div>
+      <div data-counter style="font-family:'Archivo';font-weight:900;font-size:clamp(60px,14vw,200px);line-height:0.8;letter-spacing:-0.05em;color:#c5f82a">00</div>
+    </div>
+    <div class="loader-content" style="height:3px;background:rgba(242,241,234,.15);margin-top:24px;overflow:hidden"><div data-loader-bar style="height:100%;width:0%;background:#c5f82a"></div></div>
+  </div>
+
+  <!-- FILM GRAIN -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- NAV WIPE TRANSITION -->
+  <div data-wipe class="wipe" aria-hidden="true">
+    <div class="wipe-col"></div><div class="wipe-col"></div><div class="wipe-col"></div><div class="wipe-col"></div><div class="wipe-col"></div>
+  </div>
+
+  <!-- BLEND CURSOR -->
+  <div data-cursor class="blend-cursor" style="position:fixed;top:0;left:0;z-index:9000;pointer-events:none;mix-blend-mode:difference;transform:translate(-50%,-50%);will-change:transform">
+    <div data-cursor-circle style="width:22px;height:22px;border-radius:50%;background:#fff;display:grid;place-items:center;transition:width .35s cubic-bezier(.2,.8,.2,1),height .35s cubic-bezier(.2,.8,.2,1)">
+      <span data-cursor-label style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.1em;color:#000;text-transform:uppercase;opacity:0;transition:opacity .25s;white-space:nowrap;font-weight:500"></span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;mix-blend-mode:difference;color:#fff">
+    <a href="#top" data-hover="top" data-magnet aria-label="VV — back to top" style="text-decoration:none;color:#fff">
+      <svg class="vv-mark" viewBox="-2 -2 82 68" aria-hidden="true" focusable="false">
+        <polygon class="vv-a" points="0,0 15,0 22,36 29,0 44,0 22,64"></polygon>
+        <polygon class="vv-b" points="34,0 49,0 56,36 63,0 78,0 56,64"></polygon>
+        <rect class="vv-dot" x="70" y="56" width="8" height="8"></rect>
+      </svg>
+    </a>
+    <div class="nav-menu" style="display:flex;gap:28px">
+      <a href="#about" data-hover="about" data-magnet data-scramble style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.12em;text-decoration:none;color:#fff;text-transform:uppercase">About</a>
+      <a href="#experience" data-hover="experience" data-magnet data-scramble style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.12em;text-decoration:none;color:#fff;text-transform:uppercase">Experience</a>
+      <a href="#work" data-hover="work" data-magnet data-scramble style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.12em;text-decoration:none;color:#fff;text-transform:uppercase">Work</a>
+      <a href="#skills" data-hover="skills" data-magnet data-scramble style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.12em;text-decoration:none;color:#fff;text-transform:uppercase">Skills</a>
+      <a href="#contact" data-hover="contact" data-magnet data-scramble style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.12em;text-decoration:none;color:#fff;text-transform:uppercase">Contact</a>
+    </div>
+  </nav>
+
+  <!-- SECTION PROGRESS RAIL -->
+  <nav class="rail" data-rail aria-label="Section progress">
+    <a href="#about" data-rail-link="about"><span class="rail-bar"></span><span>01</span><span class="rail-name">About</span></a>
+    <a href="#experience" data-rail-link="experience"><span class="rail-bar"></span><span>02</span><span class="rail-name">Experience</span></a>
+    <a href="#work" data-rail-link="work"><span class="rail-bar"></span><span>03</span><span class="rail-name">Work</span></a>
+    <a href="#skills" data-rail-link="skills"><span class="rail-bar"></span><span>04</span><span class="rail-name">Skills</span></a>
+    <a href="#education" data-rail-link="education"><span class="rail-bar"></span><span>05</span><span class="rail-name">Education</span></a>
+    <a href="#contact" data-rail-link="contact"><span class="rail-bar"></span><span>06</span><span class="rail-name">Contact</span></a>
+  </nav>
+
+  <!-- HERO (pinned + parallax columns) -->
+  <header id="top" data-screen-label="Hero" style="position:relative;height:140vh">
+    <div data-hero-pin style="position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center">
+      <!-- parallax background columns -->
+      <div style="position:absolute;inset:0;display:flex;justify-content:space-between;pointer-events:none;opacity:.06">
+        <div data-parallax data-speed="0.18" style="font-family:'Archivo';font-weight:900;font-size:18vh;line-height:.82;text-transform:uppercase;writing-mode:vertical-rl">RAG·LLM·RAG·LLM·RAG·LLM</div>
+        <div data-parallax data-speed="-0.28" style="font-family:'Archivo';font-weight:900;font-size:18vh;line-height:.82;text-transform:uppercase;writing-mode:vertical-rl">DEV·DEV·DEV·DEV·DEV·DEV</div>
+        <div data-parallax data-speed="0.34" style="font-family:'Archivo';font-weight:900;font-size:18vh;line-height:.82;text-transform:uppercase;writing-mode:vertical-rl">2026·2026·2026·2026·2026</div>
+        <div data-parallax data-speed="-0.2" style="font-family:'Archivo';font-weight:900;font-size:18vh;line-height:.82;text-transform:uppercase;writing-mode:vertical-rl">ML·AI·ML·AI·ML·AI·ML·AI</div>
+      </div>
+      <!-- distorting grid overlay -->
+      <div data-grid style="position:absolute;inset:-20%;pointer-events:none;background-image:linear-gradient(rgba(var(--fg),.07) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--fg),.07) 1px,transparent 1px);background-size:7vw 7vw;will-change:transform">
+        <!-- mouse-warp glow layer: brighter grid revealed around the cursor -->
+        <div data-grid-glow style="position:absolute;inset:0;background-image:linear-gradient(rgba(197,248,42,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(197,248,42,.35) 1px,transparent 1px);background-size:7vw 7vw;-webkit-mask-image:radial-gradient(circle 200px at var(--gx,50%) var(--gy,50%),black 0%,transparent 72%);mask-image:radial-gradient(circle 200px at var(--gx,50%) var(--gy,50%),black 0%,transparent 72%);opacity:0;transition:opacity .5s ease"></div>
+      </div>
+
+      <div style="position:relative;z-index:2;text-align:center;padding:0 24px">
+        <div style="font-family:'JetBrains Mono';font-size:clamp(11px,1.1vw,14px);letter-spacing:0.4em;text-transform:uppercase;margin-bottom:3vh;display:flex;gap:14px;justify-content:center;align-items:center"><span style="width:7px;height:7px;background:var(--acid);border-radius:50%;animation:blink 1.6s infinite"></span>AI / ML ENGINEER — RAG, LLMs &amp; GENAI SYSTEMS</div>
+        <h1 data-hero-text style="font-family:'Archivo';font-weight:900;font-size:clamp(64px,17vw,320px);line-height:0.78;letter-spacing:-0.05em;text-transform:uppercase;will-change:transform"><span data-scramble-in>Vatsal</span><br><span data-scramble-in style="color:var(--acid)">Vala</span></h1>
+      </div>
+      <div class="hero-foot" style="position:absolute;bottom:36px;left:0;right:0;display:flex;align-items:center;gap:26px;padding:0 40px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.15em;text-transform:uppercase">
+        <button data-hover="scroll" data-action="scrollDown" data-magnet style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:none;color:inherit;font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;padding:0">↓&nbsp;Scroll</button>
+        <span class="hero-foot-right" style="opacity:.6">Ahmedabad, India · Open to work</span>
+        <span class="clock" data-clock style="opacity:.6"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEWAYS MEGA-TEXT -->
+  <section data-screen-label="Marquee" style="position:relative;padding:14vh 0;overflow:hidden;border-top:2px solid rgb(var(--fg));border-bottom:2px solid rgb(var(--fg))">
+    <div data-hscroll style="white-space:nowrap;font-family:'Archivo';font-weight:900;font-size:clamp(60px,15vw,260px);line-height:1;letter-spacing:-0.04em;text-transform:uppercase;will-change:transform">
+      <span>Retrieval-Augmented Generation —&nbsp;</span><span style="-webkit-text-stroke:2px rgb(var(--fg));color:transparent">Large Language Models —&nbsp;</span><span>Computer Vision —&nbsp;</span><span style="-webkit-text-stroke:2px rgb(var(--fg));color:transparent">Built With Intent —&nbsp;</span>
+    </div>
+  </section>
+
+  <!-- ABOUT (sticky statement + scrub counters) -->
+  <section id="about" data-screen-label="About" style="position:relative;padding:18vh 40px;border-bottom:2px solid rgb(var(--fg))">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-split style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8vh;display:flex;gap:18px"><span style="color:var(--acid)">(01)</span><span>About</span></div>
+      <div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
+        <div style="display:flex;flex-direction:column">
+          <figure data-hover="vatsal" style="margin:0;position:sticky;top:120px;width:100%;max-width:460px">
+            <div data-hover-style="box-shadow:24px 24px 0 var(--acid);transform:translate(-4px,-4px)" style="position:relative;border:3px solid rgb(var(--fg));box-shadow:16px 16px 0 var(--acid);overflow:hidden;background:rgb(var(--fg));transition:box-shadow .45s cubic-bezier(.2,.8,.2,1),transform .45s cubic-bezier(.2,.8,.2,1)">
+              <img src="assets/vatsal-mono.jpg" alt="Portrait of Vatsal Vala" loading="lazy" class="duotone" style="display:block;width:100%;height:auto">
+              <span style="position:absolute;top:0;left:0;background:var(--acid);color:#0b0b0b;font-family:'JetBrains Mono';font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;padding:7px 12px">★ Vatsal Vala</span>
+              <div style="position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:rgb(var(--bg));color:rgb(var(--fg));font-family:'JetBrains Mono';font-size:10px;letter-spacing:0.14em;text-transform:uppercase">
+                <span>Gujarat, India</span><span>AI / ML Engineer</span>
+              </div>
+            </div>
+          </figure>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:30px">
+          <div data-reveal style="display:flex;flex-direction:column;gap:18px">
+            <p style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.7;text-transform:uppercase;letter-spacing:0.03em">I'm an AI/ML developer drawn to the unglamorous part of the job — making models work outside the notebook, where real users, messy documents, and token budgets all push back.</p>
+            <p style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.7;text-transform:uppercase;letter-spacing:0.03em">At Vivansh Infotech, I build <span style="color:var(--acid)">production RAG systems</span> end-to-end: a multi-chatbot platform where users turn their own PDFs, docs, and crawled URLs into per-bot knowledge bases, and an AI medical transcription system that auto-generates structured forms from raw records. I care about the numbers behind the demo — I cut form generation to <span style="color:var(--acid)">~15s</span> and dropped token usage <span style="color:var(--acid)">60% (25k → 10k)</span> by re-architecting a two-stage LLM flow, and I tune the full retrieval chain (chunking, MiniLM embeddings in Pinecone, top-3 reranking) so GPT-4o answers from context instead of guessing.</p>
+            <p style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.7;text-transform:uppercase;letter-spacing:0.03em">Long before the job title, I was chasing problems for the fun of it: a <span style="color:var(--acid)">Grand Finalist</span> finish at the SSIP New India Vibrant Hackathon, Dhanvantari (an AI assistant for Ayurvedic consultations), and a sign-language translator that reads gestures in real time at <span style="color:var(--acid)">92% accuracy</span>. I've completed my B.E. in AI &amp; Data Science at GEC Rajkot — still building end-to-end, from backend to retrieval to the prompt that makes it all click.</p>
+          </div>
+          <div class="scrub-row" data-reveal style="display:flex;gap:70px;margin-top:2vh">
+            <div><div data-scrub data-to="92" data-suffix="%" style="font-family:'Archivo';font-weight:900;font-size:clamp(50px,7vw,110px);line-height:.8;color:var(--acid)">0</div><div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:14px">Gesture accuracy</div></div>
+            <div><div data-scrub data-to="60" data-suffix="%" style="font-family:'Archivo';font-weight:900;font-size:clamp(50px,7vw,110px);line-height:.8;color:var(--acid)">0</div><div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:14px">Tokens reduced</div></div>
+            <div><div data-scrub data-to="15" data-suffix="s" style="font-family:'Archivo';font-weight:900;font-size:clamp(50px,7vw,110px);line-height:.8;color:var(--acid)">0</div><div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.16em;text-transform:uppercase;margin-top:14px">AI form gen</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" data-screen-label="Experience" style="position:relative;padding:16vh 40px;border-bottom:2px solid rgb(var(--fg))">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-split style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.2em;text-transform:uppercase;display:flex;gap:18px;margin-bottom:7vh"><span style="color:var(--acid)">(02)</span><span>Experience</span></div>
+      <div data-reveal class="exp-block" style="display:grid;grid-template-columns:320px 1fr;gap:40px;align-items:start;border-top:2px solid rgb(var(--fg));padding-top:40px">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div>
+            <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.14em;color:var(--acid);text-transform:uppercase">01/2026 — Present</div>
+            <h3 style="font-family:'Archivo';font-weight:900;font-size:clamp(26px,3vw,44px);line-height:0.95;letter-spacing:-0.02em;text-transform:uppercase;margin-top:14px">AI/ML Developer</h3>
+            <div style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.06em;text-transform:uppercase;margin-top:10px">Vivansh Infotech</div>
+            <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.14em;text-transform:uppercase;opacity:.55;margin-top:6px">Ahmedabad</div>
+          </div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:22px;margin:0;padding:0">
+          <li style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start"><span style="color:var(--acid);font-family:'Archivo';font-weight:900;font-size:18px;line-height:1.2">★</span><span style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.65;text-transform:uppercase;letter-spacing:0.02em">Built a <span style="color:var(--acid)">multi-chatbot RAG platform</span> where users upload PDFs, docs, and URLs (crawled via BeautifulSoup/Requests, OCR'd to markdown with Docling) to build per-bot knowledge bases.</span></li>
+          <li style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start"><span style="color:var(--acid);font-family:'Archivo';font-weight:900;font-size:18px;line-height:1.2">★</span><span style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.65;text-transform:uppercase;letter-spacing:0.02em">Engineered the retrieval pipeline: Recursive Character chunking, all-MiniLM-L6-v2 embeddings in Pinecone, reranking to top-3 chunks, and GPT-4o with optimized prompting for context-grounded responses.</span></li>
+          <li style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start"><span style="color:var(--acid);font-family:'Archivo';font-weight:900;font-size:18px;line-height:1.2">★</span><span style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.65;text-transform:uppercase;letter-spacing:0.02em">Built an <span style="color:var(--acid)">AI medical transcription system</span>: a two-stage LLM pipeline extracts medical terms and permutations for fuzzy (RapidFuzz) and semantic (FAISS) search, auto-generating structured forms from records.</span></li>
+          <li style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start"><span style="color:var(--acid);font-family:'Archivo';font-weight:900;font-size:18px;line-height:1.2">★</span><span style="font-family:'JetBrains Mono';font-size:clamp(13px,1.15vw,15px);line-height:1.65;text-transform:uppercase;letter-spacing:0.02em">Cut end-to-end form generation to <span style="color:var(--acid)">~15s</span>, reducing token usage <span style="color:var(--acid)">60% (25k→10k)</span> by optimizing the sequential pipeline.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK (warping letters + draggable piling cards) -->
+  <section id="work" data-screen-label="Work" style="position:relative;padding:16vh 40px 20vh;overflow:hidden">
+    <div style="max-width:1400px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+        <h2 data-warp style="font-family:'Archivo';font-weight:900;font-size:clamp(90px,24vw,460px);line-height:0.78;letter-spacing:-0.05em;text-transform:uppercase;display:flex">
+          <span data-wl style="display:inline-block;will-change:transform">W</span><span data-wl style="display:inline-block;will-change:transform">O</span><span data-wl style="display:inline-block;will-change:transform">R</span><span data-wl style="display:inline-block;will-change:transform">K</span>
+        </h2>
+        <div data-split style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.16em;text-transform:uppercase;padding-bottom:2vh;opacity:.7">(03) — Drag the cards ↗</div>
+      </div>
+
+      <div data-stage style="position:relative;height:620px;margin-top:6vh"></div>
+    </div>
+  </section>
+
+  <!-- SKILLS (distort marquees) -->
+  <section id="skills" data-screen-label="Skills" style="position:relative;padding:16vh 0;border-top:2px solid rgb(var(--fg));border-bottom:2px solid rgb(var(--fg));overflow:hidden">
+    <div style="padding:0 40px;margin-bottom:8vh"><div data-split style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.2em;text-transform:uppercase;display:flex;gap:18px"><span style="color:var(--acid)">(04)</span><span>Capabilities</span></div></div>
+    <div data-skew style="display:flex;flex-direction:column;gap:18px;will-change:transform">
+      <div data-mrow data-dir="1" style="white-space:nowrap;font-family:'Archivo';font-weight:900;font-size:clamp(40px,8vw,130px);line-height:1;letter-spacing:-0.03em;text-transform:uppercase;will-change:transform">RAG · PROMPT ENGINEERING · LANGCHAIN · LLAMAINDEX · LANGGRAPH · GPT-4o · RAG · PROMPT ENGINEERING · LANGCHAIN · LLAMAINDEX · LANGGRAPH · GPT-4o · </div>
+      <div data-mrow data-dir="-1" style="white-space:nowrap;font-family:'Archivo';font-weight:900;font-size:clamp(40px,8vw,130px);line-height:1;letter-spacing:-0.03em;text-transform:uppercase;color:transparent;-webkit-text-stroke:2px rgb(var(--fg));will-change:transform">PINECONE · FAISS · QDRANT · EMBEDDINGS · RERANKING · CHUNKING · PINECONE · FAISS · QDRANT · EMBEDDINGS · RERANKING · CHUNKING · </div>
+      <div data-mrow data-dir="1" style="white-space:nowrap;font-family:'Archivo';font-weight:900;font-size:clamp(40px,8vw,130px);line-height:1;letter-spacing:-0.03em;text-transform:uppercase;will-change:transform">PYTHON · FASTAPI · DJANGO · TENSORFLOW · OPENCV · SCIKIT-LEARN · SQL · PYTHON · FASTAPI · DJANGO · TENSORFLOW · OPENCV · SCIKIT-LEARN · SQL · </div>
+    </div>
+    <div style="max-width:1400px;margin:11vh auto 0;padding:0 40px">
+      <div data-skill-list></div>
+      <div style="border-top:1px solid rgba(var(--fg),.22)"></div>
+    </div>
+  </section>
+
+  <!-- EDUCATION & AWARDS (minimal list) -->
+  <section id="education" data-screen-label="Education" style="position:relative;padding:16vh 40px;border-bottom:2px solid rgb(var(--fg))">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-split style="font-family:'JetBrains Mono';font-size:13px;letter-spacing:0.2em;text-transform:uppercase;display:flex;gap:18px;margin-bottom:7vh"><span style="color:var(--acid)">(05)</span><span>Education &amp; Awards</span></div>
+      <div data-path-list></div>
+      <div style="border-top:1px solid rgba(var(--fg),.25)"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT (circular LET'S zoom) -->
+  <section id="contact" data-screen-label="Contact" style="position:relative;height:150vh">
+    <div data-circle-pin style="position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center;background:rgb(var(--bg))">
+      <div data-circle style="position:absolute;inset:0;background:var(--acid);color:#0b0b0b;display:grid;place-items:center;clip-path:circle(0% at 50% 50%);will-change:clip-path">
+        <svg data-ring class="contact-ring" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+          <defs><path id="vvRing" d="M150,150 m-118,0 a118,118 0 1,1 236,0 a118,118 0 1,1 -236,0"></path></defs>
+          <text><textPath href="#vvRing" textLength="740" lengthAdjust="spacingAndGlyphs">OPEN TO WORK · AI/ML ENGINEER · RAG &amp; GENAI · OPEN TO WORK · AI/ML ENGINEER · RAG &amp; GENAI ·</textPath></text>
+        </svg>
+        <div style="position:relative;z-index:2;text-align:center;padding:0 24px">
+          <h2 style="font-family:'Archivo';font-weight:900;font-size:clamp(80px,22vw,400px);line-height:0.78;letter-spacing:-0.05em;text-transform:uppercase">Let's<br>talk</h2>
+          <a data-email-link data-hover="email" data-magnet style="display:inline-block;margin-top:5vh;font-family:'Archivo';font-weight:800;font-size:clamp(20px,3.4vw,48px);letter-spacing:-0.02em;color:#0b0b0b;text-decoration:none;text-transform:lowercase;border-bottom:4px solid #0b0b0b"></a>
+          <div data-socials style="display:flex;gap:30px;justify-content:center;margin-top:5vh;flex-wrap:wrap"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT DETAIL MODAL -->
+  <div data-modal style="position:fixed;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.2,.8,.2,1)">
+    <div data-modal-bg data-action="closeDetail" style="position:absolute;inset:0;background:rgba(11,11,11,.9);backdrop-filter:blur(5px)"></div>
+    <div data-modal-card style="position:relative;z-index:2;width:min(780px,95vw);max-height:88vh;overflow-y:auto;background:#0b0b0b;color:#f2f1ea;border:2px solid #c5f82a;box-shadow:14px 14px 0 #c5f82a;transform:translateY(30px) scale(.96);transition:transform .45s cubic-bezier(.2,.8,.2,1);will-change:transform">
+      <div style="position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 24px;background:#0b0b0b;border-bottom:2px solid rgba(242,241,234,.15)">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.16em;text-transform:uppercase;display:flex;gap:13px;align-items:center"><span data-modal-idx style="color:#c5f82a"></span><span data-modal-tag style="background:#c5f82a;color:#0b0b0b;padding:4px 9px;font-weight:500"></span></div>
+        <button data-hover="close" data-action="closeDetail" aria-label="Close" style="width:34px;height:34px;flex:none;background:#c5f82a;color:#0b0b0b;border:none;cursor:pointer;font-size:15px;font-weight:900;display:grid;place-items:center">✕</button>
+      </div>
+      <div style="padding:30px 26px 36px">
+        <h3 data-modal-name style="font-family:'Archivo';font-weight:900;font-size:clamp(40px,7vw,76px);line-height:0.84;letter-spacing:-0.04em;text-transform:uppercase"></h3>
+        <div data-modal-media></div>
+        <p data-modal-long style="font-family:'JetBrains Mono';font-size:clamp(13px,1.1vw,15px);line-height:1.7;text-transform:uppercase;letter-spacing:0.02em"></p>
+        <ul data-modal-points style="list-style:none;display:flex;flex-direction:column;gap:16px;margin:28px 0 0;padding:0"></ul>
+        <div data-modal-tech style="display:flex;flex-wrap:wrap;gap:9px;margin-top:30px"></div>
+        <div data-modal-link></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHATBOT -->
+  <button data-hover="ask" class="ask-btn" data-action="toggleChat" data-magnet aria-label="Open portfolio assistant" style="position:fixed;bottom:24px;right:24px;z-index:300;display:flex;align-items:center;gap:10px;height:56px;padding:0 22px;background:#c5f82a;color:#0b0b0b;border:2px solid #0b0b0b;border-radius:0;font-family:'Archivo';font-weight:900;font-size:14px;letter-spacing:0.02em;text-transform:uppercase;cursor:pointer;box-shadow:6px 6px 0 #0b0b0b;will-change:transform">
+    <span style="width:26px;height:26px;background:#0b0b0b;color:#c5f82a;display:grid;place-items:center;font-size:13px;font-weight:900">AI</span>Ask me ★
+  </button>
+
+  <div data-chat-panel class="chat-panel" style="position:fixed;bottom:92px;right:24px;z-index:301;width:390px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;background:#0b0b0b;color:#f2f1ea;border:2px solid #c5f82a;border-radius:0;overflow:hidden;box-shadow:10px 10px 0 rgba(197,248,42,.25);opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity .35s cubic-bezier(.2,.8,.2,1),transform .35s cubic-bezier(.2,.8,.2,1)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;background:#c5f82a;color:#0b0b0b">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="width:36px;height:36px;background:#0b0b0b;display:grid;place-items:center">
+          <svg class="vv-mark vv-mark--mini" viewBox="-2 -2 82 68" aria-hidden="true" focusable="false" style="height:15px">
+            <polygon points="0,0 15,0 22,36 29,0 44,0 22,64"></polygon>
+            <polygon points="34,0 49,0 56,36 63,0 78,0 56,64"></polygon>
+            <rect class="vv-dot" x="70" y="56" width="8" height="8"></rect>
+          </svg>
+        </span>
+        <div>
+          <div style="font-family:'Archivo';font-weight:900;font-size:15px;letter-spacing:-0.01em;text-transform:uppercase;line-height:1">Portfolio Assistant</div>
+          <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#0b0b0b;animation:blink 1.6s infinite"></span>Online — ask anything</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button data-chat-delete data-hover="clear" data-action="askDelete" aria-label="Delete conversation" title="Delete conversation" style="width:32px;height:32px;flex:none;display:none;place-items:center;background:#0b0b0b;color:#c5f82a;border:none;border-radius:0;cursor:pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 6h16"></path><path d="M9 6V3.5h6V6"></path><path d="M6 6l1.2 14.5h9.6L18 6"></path><path d="M10 10.5v6M14 10.5v6"></path></svg>
+        </button>
+        <button data-hover="close" data-action="toggleChat" aria-label="Close" style="width:32px;height:32px;flex:none;background:#0b0b0b;color:#c5f82a;border:none;border-radius:0;cursor:pointer;font-size:14px;font-weight:700">✕</button>
+      </div>
+    </div>
+    <div data-chat-scroll style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <div style="align-self:flex-start;max-width:86%;padding:13px 15px;background:rgba(242,241,234,.06);border:1px solid rgba(242,241,234,.18);font-family:'Archivo';font-size:14px;line-height:1.5">Hey — I'm Vatsal's assistant. Ask me about his AI/ML work, the projects, his stack, or how to reach him.</div>
+      <div data-chat-messages style="display:contents"></div>
+      <div data-chat-typing style="align-self:flex-start;display:none;gap:5px;padding:15px 16px;background:rgba(242,241,234,.06);border:1px solid rgba(242,241,234,.18)">
+        <span style="width:7px;height:7px;border-radius:50%;background:#c5f82a;animation:blink 1s infinite 0s"></span>
+        <span style="width:7px;height:7px;border-radius:50%;background:#c5f82a;animation:blink 1s infinite .2s"></span>
+        <span style="width:7px;height:7px;border-radius:50%;background:#c5f82a;animation:blink 1s infinite .4s"></span>
+      </div>
+    </div>
+    <div data-chat-confirm style="position:absolute;inset:0;z-index:6;background:rgba(11,11,11,.94);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:34px;text-align:center">
+      <div style="font-family:'Archivo';font-weight:900;font-size:24px;line-height:1.04;letter-spacing:-0.02em;text-transform:uppercase;color:#f2f1ea">Delete this<br>conversation?</div>
+      <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(242,241,234,.55)">This can't be undone</div>
+      <div style="display:flex;gap:12px;margin-top:6px">
+        <button data-hover="yes" data-action="confirmClear" style="background:#c5f82a;color:#0b0b0b;border:none;border-radius:0;font-family:'Archivo';font-weight:900;font-size:13px;letter-spacing:0.03em;text-transform:uppercase;padding:13px 22px;cursor:pointer;box-shadow:4px 4px 0 rgba(242,241,234,.2)">Yes, delete</button>
+        <button data-hover="no" data-action="cancelDelete" style="background:transparent;color:#f2f1ea;border:2px solid rgba(242,241,234,.45);border-radius:0;font-family:'Archivo';font-weight:900;font-size:13px;letter-spacing:0.03em;text-transform:uppercase;padding:13px 22px;cursor:pointer">No, keep</button>
+      </div>
+    </div>
+    <div style="padding:12px;border-top:2px solid rgba(242,241,234,.15)">
+      <div data-chat-suggestions style="display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap"></div>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <input data-chat-input placeholder="ASK ABOUT VATSAL..." data-focus-style="border-color:#c5f82a" style="flex:1;background:rgba(242,241,234,.05);border:1px solid rgba(242,241,234,.25);border-radius:0;padding:13px 14px;color:#f2f1ea;font-family:'JetBrains Mono';font-size:12px;letter-spacing:0.04em;text-transform:uppercase;outline:none">
+        <button data-hover="send" data-action="sendMsg" aria-label="Send" style="width:46px;flex:none;background:#c5f82a;color:#0b0b0b;border:none;border-radius:0;cursor:pointer;font-size:18px;font-weight:900;display:grid;place-items:center">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="position:relative;z-index:2;padding:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;background:#0b0b0b;color:#f2f1ea">
+    <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.14em;text-transform:uppercase;opacity:.6">© 2026 Vatsal Vala · <span class="clock" data-clock></span></span>
+    <a href="#top" data-hover="top" aria-label="VV — back to top" style="color:#f2f1ea">
+      <svg class="vv-mark vv-mark--acid drawn" viewBox="-2 -2 82 68" aria-hidden="true" focusable="false" style="height:clamp(38px,6vw,84px)">
+        <polygon class="vv-a" points="0,0 15,0 22,36 29,0 44,0 22,64"></polygon>
+        <polygon class="vv-b" points="34,0 49,0 56,36 63,0 78,0 56,64"></polygon>
+        <rect class="vv-dot" x="70" y="56" width="8" height="8"></rect>
+      </svg>
+    </a>
+    <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:0.14em;text-transform:uppercase;opacity:.6;margin-right:150px">Designed &amp; built with intent</span>
+  </footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    image: portfolio-rag-api
+    container_name: portfolio-rag-api
+    env_file: .env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

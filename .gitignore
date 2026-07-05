@@ -1,0 +1,29 @@
+# --- Secrets: never commit real keys ---
+.env
+.env.local
+.env.*.local
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+portfolio/.venv/
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# --- Node (if ever added) ---
+node_modules/
+
+# --- Backend caches / generated ---
+portfolio/backend/chunks_cache.json
+
+# --- Claude Code / tooling scaffolding (not part of the app) ---
+.agents/
+.claude/
+skills-lock.json
