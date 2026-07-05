@@ -12,7 +12,7 @@
   // Resolution order: (1) ?api=... query override, (2) localhost during dev,
   // (3) the hosted backend in production. After you deploy the backend to
   // Render, replace PROD_API_URL below with your service URL (no trailing slash).
-  var PROD_API_URL = "https://REPLACE_WITH_YOUR_RENDER_URL.onrender.com";
+  var PROD_API_URL = "https://vatsal-portfolio-api.onrender.com";
   var API_URL = (function () {
     try {
       var q = new URLSearchParams(location.search).get("api");
