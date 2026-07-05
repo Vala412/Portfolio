@@ -9,18 +9,27 @@ no framework, no dependencies.
 frontend/
 ├── index.html        # markup
 ├── css/styles.css    # base styles + upgrade layers (grain, rail, reveals, loader)
-├── js/main.js        # FX engine, loader, cursor, cards, modal, rail, clock
-├── js/chat.js        # chat widget wired to the FastAPI backend
-└── assets/           # portrait + project shots
+├── js/main.js        # FX engine, loader, cursor, cards, project router, rail, clock
+├── js/chat.js        # chat widget (Markdown + persistence) wired to the backend
+├── assets/           # portrait + project shots
+├── sitemap.xml       # home + per-project /work URLs
+├── robots.txt        # crawl policy + sitemap pointer
+├── llms.txt          # profile/projects summary for LLM crawlers
+└── _redirects        # Netlify SPA fallback (/* → /index.html 200)
 ```
 
 ## Features
 
 Everything from the Claude Design import — loader, blend cursor, pinned parallax
 hero, mega-text marquee, sticky-portrait About with scroll-scrubbed counters,
-draggable WORK card pile + detail modal, skill marquees, circular "Let's talk"
-contact reveal, color-morph background, RAG chat assistant — plus:
+draggable WORK card pile, skill marquees, circular "Let's talk" contact reveal,
+color-morph background, RAG chat assistant — plus:
 
+- **Project routing** — each WORK card navigates to a real URL, `/work/<slug>`
+  (History API), rendered as a full-screen case-study page with the column-wipe
+  transition. Browser Back and deep-links work (SPA fallback + `<base href>`).
+- **Markdown chat** — assistant replies render Markdown (bold, `code`, lists,
+  links); the transcript + conversation id persist in `localStorage` across reloads.
 - **Inertia scroll FX** — effects are driven by a lerped scroll value with velocity
 - **Velocity-reactive marquees** — rows skew as you scroll faster
 - **Split-text mask reveals** on section labels; fade-up reveals on content blocks
@@ -39,7 +48,7 @@ contact reveal, color-morph background, RAG chat assistant — plus:
 
 ## Run it
 
-**Serve the frontend (recommended)**
+**Serve the frontend** (a server is required so `/work/<slug>` routes resolve):
 ```
 cd portfolio/frontend
 python -m http.server 5500
@@ -53,5 +62,17 @@ cd portfolio/backend
 python main.py     # FastAPI on http://localhost:8000
 ```
 
-The chat calls `http://localhost:8000` by default. Point it elsewhere with a
-query param: `http://localhost:5500/?api=https://your-backend.example.com`.
+## Backend URL resolution (`js/chat.js`)
+
+The chat picks its API endpoint in this order:
+
+1. `?api=https://host` query override (handy for testing)
+2. `localhost` / `127.0.0.1` → `http://localhost:8000` (local dev)
+3. otherwise → `PROD_API_URL` — **set this constant to your deployed backend URL**
+   (e.g. the Render service) once the backend is hosted.
+
+## Deploy (Netlify)
+
+Publish directory is `portfolio/frontend`. `_redirects` handles the SPA fallback,
+and `sitemap.xml` / `robots.txt` / `llms.txt` sit at the site root. See
+[`../DEPLOY.md`](../DEPLOY.md) for the full frontend + backend deploy walkthrough.

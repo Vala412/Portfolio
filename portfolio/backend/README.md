@@ -4,6 +4,13 @@ Production hybrid-RAG API for Vatsal Vala's portfolio assistant. Single provider
 **OpenAI** (chat + dense embeddings) and **Pinecone** (dense + sparse indexes +
 hosted reranking). FastAPI, fully async, with SSE streaming.
 
+The assistant answers **two kinds of questions**: (1) about Vatsal — his work,
+projects, skills and how to reach him, grounded in the retrieved portfolio
+context, and (2) general **technology / AI-ML / programming** questions from the
+model's own knowledge. Conversation history is kept per `conversation_id` and fed
+back into the prompt, so follow-ups ("it", "that", "and the stack?") resolve
+naturally.
+
 ## Retrieval pipeline
 
 ```
@@ -48,6 +55,8 @@ python ingest.py
 
 Creates `portfolio-dense` (1536-d cosine) and `portfolio-sparse` (integrated
 sparse) if missing, then upserts every chunk of `data/*.md` into both. Idempotent.
+Run this **once before serving** (locally or against your prod Pinecone) so the
+assistant has data to retrieve.
 
 ## Run
 
@@ -90,7 +99,18 @@ Key settings — see `.env.example` for the full list.
 | `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small` | 1536-d |
 | `PINECONE_RERANK_MODEL` | `bge-reranker-v2-m3` | Pinecone-hosted; free tier = 500 rerank req/mo |
 | `DENSE_TOP_K` / `SPARSE_TOP_K` / `RERANK_TOP_N` | 20 / 20 / 6 | Retrieval fan-out → final context size |
+| `ALLOWED_ORIGINS` | `*` | Comma-separated; set to your site origin in prod |
 | `RATE_LIMIT` | `20/minute` | Per-IP on `/chat*` |
+
+## Deploy (Render, free tier)
+
+The service is lightweight (no local ML models — OpenAI + Pinecone over HTTP), so
+it runs on Render's free 512 MB instance. A `render.yaml` blueprint is included at
+the repo root: root dir `portfolio/backend`, start
+`uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check `/health`. Set
+`OPENAI_API_KEY` and `PINECONE_API_KEY` as dashboard secrets. The `Dockerfile`
+also binds `$PORT` for any container host. Full walkthrough:
+[`../DEPLOY.md`](../DEPLOY.md).
 
 ## Scaling notes
 
