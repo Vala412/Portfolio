@@ -36,6 +36,7 @@ class OpenAILLM:
         self.settings = settings
         self.model = settings.openai_model
         self._system_prompt = PORTFOLIO_SALES_ASSISTANT_SYSTEM_PROMPT.format(
+            bot_name=settings.bot_name,
             assistant_name=settings.assistant_name,
             contact_email=settings.contact_email,
             context=_CONTEXT_IN_USER_TURN,
@@ -84,12 +85,14 @@ class OpenAILLM:
                 f"{self._format_context(context_chunks)}\n\n"
                 f"Question: {query.strip()}\n\n"
                 "Use the retrieved context above as the source of truth for anything about "
-                f"{self.settings.assistant_name}. If this is a question about him and the context "
-                f"lacks the answer, say so plainly and point to the contact email "
-                f"({self.settings.contact_email}). If it is a general technology, AI/ML, or "
+                f"{self.settings.assistant_name}. Speak about him in the third person. If the "
+                "question is short or terse (e.g. \"best project?\", \"tech stack?\"), read it as a "
+                f"question about {self.settings.assistant_name}'s portfolio. If this is a question "
+                "about him and the context lacks the answer, say so plainly and point to the contact "
+                f"email ({self.settings.contact_email}). If it is a general technology, AI/ML, or "
                 "programming question, answer helpfully from your own knowledge and tie it back to "
                 "his work where relevant. Keep it concise (2-5 sentences) and use Markdown "
-                "formatting when it helps."
+                "formatting when it helps — **bold** the key terms that deserve emphasis."
             ),
         })
         return messages

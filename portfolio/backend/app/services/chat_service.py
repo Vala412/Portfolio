@@ -1,6 +1,6 @@
 """Chat orchestration: hybrid retrieval → OpenAI generation (blocking + streaming)."""
 
-from typing import AsyncIterator, Optional, Tuple
+from typing import Any, AsyncIterator, Dict, List, Optional, Tuple
 
 from app.core.config import Settings
 from app.core.errors import ChatProcessingError, RateLimitExceededError, ServiceUnavailableError
@@ -9,6 +9,27 @@ from app.repositories.conversation_store import InMemoryConversationStore
 from app.services.container import AppContainer
 
 logger = get_logger(__name__)
+
+# How many characters of each retrieved chunk to surface in the UI's
+# "reasoning" panel. Enough to identify the chunk without dumping the source.
+_SNIPPET_CHARS = 110
+
+
+def _summarize_sources(chunks: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    """Compact the retrieved chunks into {source, snippet} rows for the client.
+
+    Only what the reasoning panel needs is exposed — no scores, ids, or the
+    full chunk text — keeping the SSE payload small and safe.
+    """
+    summary: List[Dict[str, str]] = []
+    for chunk in chunks or []:
+        source = str(chunk.get("source") or "context")
+        text = " ".join(str(chunk.get("text") or "").split())
+        snippet = text[:_SNIPPET_CHARS].rstrip()
+        if len(text) > _SNIPPET_CHARS:
+            snippet += "…"
+        summary.append({"source": source, "snippet": snippet})
+    return summary
 
 
 class ChatService:
@@ -51,8 +72,8 @@ class ChatService:
 
     async def answer_stream(
         self, query: str, conversation_id: Optional[str] = None
-    ) -> AsyncIterator[Tuple[str, Optional[str]]]:
-        """Yield ('meta', cid) → ('token', delta)* → ('done', None).
+    ) -> AsyncIterator[Tuple[str, Any]]:
+        """Yield ('meta', cid) → ('sources', rows) → ('token', delta)* → ('done', None).
 
         Retrieval runs before the first token; exceptions propagate to the route,
         which converts them into an SSE `error` event.
@@ -67,6 +88,7 @@ class ChatService:
         yield ("meta", cid)
 
         chunks = await self.container.retriever.retrieve(clean_query)
+        yield ("sources", _summarize_sources(chunks))
         parts = []
         async for delta in self.container.llm.stream(clean_query, chunks, history):
             parts.append(delta)

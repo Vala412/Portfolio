@@ -21,6 +21,15 @@ html::-webkit-scrollbar-thumb:hover { background: #fff; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 @keyframes cardIn { from { opacity: 0; transform: translateY(60px) scale(.9); } to { opacity: 1; } }
 
+/* chat reasoning panel — animated stage indicator */
+.think-diamond { display: inline-block; animation: think-spin 1.7s linear infinite; }
+@keyframes think-spin { to { transform: rotate(360deg); } }
+.think-dots::after { content: ""; animation: think-dots 1.4s steps(1, end) infinite; }
+@keyframes think-dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } 100% { content: ""; } }
+@media (prefers-reduced-motion: reduce) {
+  .think-diamond { animation: blink 1.6s ease-in-out infinite; }
+}
+
 input::placeholder { color: currentColor; opacity: .5; }
 
 [data-chat-scroll] { scrollbar-width: thin; scrollbar-color: #c5f82a #0b0b0b; }
@@ -320,4 +329,74 @@ figure[data-hover="vatsal"]:hover .duotone { animation: vv-glitch .55s steps(1, 
   [data-reveal] { opacity: 1; transform: none; transition: none; }
   [data-loader].is-done .loader-col { transition-duration: .01s; transition-delay: 0s; }
   html { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   RESPONSIVE — full coverage: tiny phones → ultrawide / 4K
+   Extends the import's 440–1100px breakpoints on both ends.
+   ============================================================ */
+
+/* media never forces horizontal scroll */
+img, svg, video { max-width: 100%; }
+
+/* long words / URLs in chat wrap instead of overflowing the bubble */
+[data-chat-scroll] p,
+[data-chat-scroll] li,
+[data-chat-scroll] a,
+[data-chat-scroll] code,
+[data-chat-scroll] pre { overflow-wrap: anywhere; word-break: break-word; }
+
+/* --- WORK cards (drag pile): keep title + copy inside the card ------------
+   Cards are built in main.js with a fixed 340px width and a 34px title. On
+   narrow screens the title is one long token (e.g. "EQUITYNEWS.AI") that can't
+   wrap, so it spills past the edge. Make the title fluid, break long tokens,
+   and clip any residual overflow. clamp() keeps the desktop size unchanged. --- */
+[data-card] { overflow: hidden; }
+[data-card] > * { max-width: 100%; }
+[data-card] img { display: block; width: 100%; height: auto; }
+[data-card] h3 {
+  font-size: clamp(21px, 6vw, 34px) !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+[data-card] p { overflow-wrap: anywhere; word-break: break-word; }
+
+/* --- Large desktops & 4K --------------------------------------------------
+   The section content is inline-styled `max-width:1400px`, which strands huge
+   empty margins on wide screens. Widen that cage progressively so the layout
+   fills the viewport; vw-based type clamps already scale on their own. --- */
+@media (min-width: 1800px) {
+  [style*="max-width:1400px"] { max-width: min(1680px, 84vw) !important; }
+}
+@media (min-width: 2400px) {
+  [style*="max-width:1400px"] { max-width: min(2100px, 80vw) !important; }
+  [data-modal-card] [style*="max-width:920px"] { max-width: 1180px !important; }
+  nav { padding: 30px 4vw !important; }
+}
+@media (min-width: 3200px) {
+  [style*="max-width:1400px"] { max-width: 2600px !important; }
+  [data-modal-card] [style*="max-width:920px"] { max-width: 1500px !important; }
+}
+
+/* --- Small phones (≤ 400px) --- */
+@media (max-width: 400px) {
+  .nav-menu { gap: 8px !important; }
+  .nav-menu a { font-size: 8.5px !important; letter-spacing: 0.02em !important; }
+  .scrub-row { gap: 22px !important; }
+  [data-card] { width: min(84vw, 270px) !important; padding: 18px !important; }
+  .chat-panel { width: calc(100vw - 16px) !important; left: 8px !important; right: 8px !important; height: min(72vh, 520px) !important; bottom: 74px !important; }
+}
+
+/* --- Very small phones (≤ 340px) --- */
+@media (max-width: 340px) {
+  nav { padding: 12px 12px !important; }
+  .nav-menu { gap: 6px !important; }
+  .nav-menu a { font-size: 8px !important; }
+  .ask-btn { bottom: 14px !important; right: 14px !important; }
+  .chat-panel { bottom: 70px !important; }
+}
+
+/* --- Short landscape phones: keep the chat panel inside the viewport --- */
+@media (max-height: 460px) and (orientation: landscape) {
+  .chat-panel { height: calc(100vh - 88px) !important; max-height: calc(100vh - 88px) !important; bottom: 68px !important; }
 }

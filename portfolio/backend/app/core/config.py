@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     # `assistant_name` is the portfolio owner (the person). `bot_name` is the
     # chatbot's own name/persona that greets and represents that person.
     assistant_name: str = "Vatsal Vala"
-    bot_name: str = "Vee"
+    bot_name: str = "Anvi"
     contact_email: str = "vatsalvala46@gmail.com"
 
     # --- OpenAI ---

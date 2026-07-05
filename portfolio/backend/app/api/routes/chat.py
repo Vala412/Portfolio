@@ -42,8 +42,9 @@ async def chat_stream(
 ) -> EventSourceResponse:
     """Stream the answer over SSE.
 
-    Events: `meta` {conversation_id} → `token` {t} … → `done` {} (or `error`).
-    All payloads are JSON so token text with newlines is transported safely.
+    Events: `meta` {conversation_id} → `sources` {chunks} → `token` {t} … →
+    `done` {} (or `error`). All payloads are JSON so token text with newlines
+    is transported safely.
     """
 
     async def event_generator():
@@ -53,6 +54,8 @@ async def chat_stream(
             ):
                 if kind == "meta":
                     yield {"event": "meta", "data": json.dumps({"conversation_id": payload})}
+                elif kind == "sources":
+                    yield {"event": "sources", "data": json.dumps({"chunks": payload})}
                 elif kind == "token":
                     yield {"event": "token", "data": json.dumps({"t": payload})}
                 elif kind == "done":

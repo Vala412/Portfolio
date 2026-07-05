@@ -26,19 +26,12 @@
   var state = { chatOpen: false, input: "", sending: false, messages: [], confirmDelete: false, conversationId: null };
   var streaming = false;
   var streamIv = null;
+  var stageT = null;
 
-  // ----- persist the transcript so memory survives a page refresh -----
-  var LS_KEY = "vv_chat_v1";
-  function persist() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify({ cid: state.conversationId, messages: state.messages })); } catch (e) {}
-  }
-  function restore() {
-    try {
-      var r = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-      if (r && r.messages && r.messages.length) { state.messages = r.messages; state.conversationId = r.cid || null; }
-    } catch (e) {}
-  }
-  function forget() { try { localStorage.removeItem(LS_KEY); } catch (e) {} }
+  // Conversation is intentionally in-memory only: it survives opening/closing
+  // the panel within a page load, but a refresh starts a fresh conversation.
+  // Wipe any transcript left behind by older builds that persisted to storage.
+  try { localStorage.removeItem("vv_chat_v1"); } catch (e) {}
 
   function init() {
     var VV = window.VV;
@@ -52,8 +45,8 @@
       s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, function (_, t, u) {
         return '<a href="' + u + '" target="_blank" rel="noopener" style="color:#c5f82a">' + t + '</a>';
       });
-      s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-      s = s.replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, "$1<em>$2</em>");
+      s = s.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#c5f82a;font-weight:800">$1</strong>');
+      s = s.replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, '$1<em style="color:#e9ffb0;font-style:normal;border-bottom:1px solid rgba(197,248,42,.4)">$2</em>');
       return s;
     }
     function mdToHtml(src) {
@@ -75,7 +68,7 @@
         if (/^\s*$/.test(ln)) { closeList(); continue; }
         if ((m = ln.match(/^(#{1,4})\s+(.*)$/))) {
           closeList();
-          out += '<div style="font-family:\'Archivo\';font-weight:900;font-size:15px;margin:10px 0 4px;text-transform:uppercase;letter-spacing:-0.01em">' + mdInline(m[2]) + "</div>";
+          out += '<div style="font-family:\'Archivo\';font-weight:900;font-size:15px;margin:10px 0 4px;text-transform:uppercase;letter-spacing:-0.01em;color:#c5f82a">' + mdInline(m[2]) + "</div>";
           continue;
         }
         if ((m = ln.match(/^\s*[-*+]\s+(.*)$/))) {
@@ -106,17 +99,53 @@
         p.style.opacity = "0"; p.style.transform = "translateY(24px)"; p.style.pointerEvents = "none";
       }
     }
+    // ----- Claude-style "reasoning" panel: animated stages + selected chunks -----
+    function renderThinking(th) {
+      if (!th) return "";
+      var acid = "#c5f82a";
+      var rows = (th.sources || []).map(function (s) {
+        return '<div style="display:flex;gap:7px;padding:5px 0;border-top:1px solid rgba(242,241,234,.09)">'
+          + '<span style="color:' + acid + ';flex:none;font-size:9px;line-height:1.6">▸</span>'
+          + '<span style="font-family:\'JetBrains Mono\';font-size:10.5px;line-height:1.5">'
+          + '<span style="color:' + acid + ';text-transform:uppercase;letter-spacing:.04em">' + esc(s.source) + '</span>'
+          + '<span style="color:rgba(242,241,234,.55)"> &mdash; ' + esc(s.snippet || "") + '</span></span></div>';
+      }).join("");
+
+      if (!th.done) {
+        var head = '<div style="display:flex;align-items:center;gap:8px;font-family:\'JetBrains Mono\';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:' + acid + '">'
+          + '<span class="think-diamond">◆</span><span>' + esc(th.stage || "Thinking") + '<span class="think-dots"></span></span></div>';
+        var openList = (th.sources && th.sources.length) ? '<div style="margin-top:9px">' + rows + '</div>' : "";
+        return '<div style="padding:11px 13px;background:rgba(197,248,42,.05);border:1px solid rgba(197,248,42,.22)">' + head + openList + '</div>';
+      }
+
+      var secs = ((th.elapsedMs || 0) / 1000).toFixed(1);
+      var n = (th.sources || []).length;
+      var caret = th.collapsed ? "▾" : "▴";
+      var summary = '<button data-think-toggle style="display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;border:none;cursor:pointer;font-family:\'JetBrains Mono\';font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(242,241,234,.6);padding:0">'
+        + '<span style="color:' + acid + '">◆</span><span>Thought for ' + secs + 's' + (n ? (" · " + n + " source" + (n > 1 ? "s" : "")) : "") + '</span>'
+        + '<span style="margin-left:auto;color:' + acid + '">' + caret + '</span></button>';
+      var list = (!th.collapsed && n) ? '<div style="margin-top:9px">' + rows + '</div>' : "";
+      return '<div style="padding:9px 12px;background:rgba(242,241,234,.04);border:1px solid rgba(242,241,234,.14)">' + summary + list + '</div>';
+    }
+
     function renderMessages() {
       var host = $("[data-chat-messages]");
-      host.innerHTML = state.messages.map(function (m) {
+      host.innerHTML = state.messages.map(function (m, mi) {
         var u = m.role === "user";
         var align = u ? "flex-end" : "flex-start";
         var bg = u ? "#c5f82a" : "rgba(242,241,234,.06)";
         var color = u ? "#0b0b0b" : "#f2f1ea";
         var border = u ? "#c5f82a" : "rgba(242,241,234,.18)";
         var ws = u ? ";white-space:pre-wrap" : "";
-        var body = u ? esc(m.text) : mdToHtml(m.text);
-        return '<div style="align-self:' + align + ';max-width:86%;padding:13px 15px;background:' + bg + ';color:' + color + ';border:1px solid ' + border + ';font-family:\'Archivo\';font-size:14px;line-height:1.5' + ws + '">' + body + '</div>';
+        var label = u ? "You" : "Anvi";
+        var labelColor = u ? "#c5f82a" : "rgba(242,241,234,.5)";
+        var labelHtml = '<div style="font-family:\'JetBrains Mono\';font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:' + labelColor + ';padding:0 2px">' + label + '</div>';
+        var think = (!u && m.thinking) ? renderThinking(m.thinking) : "";
+        var hasBody = u || m.text;
+        var bubble = hasBody
+          ? '<div style="padding:13px 15px;background:' + bg + ';color:' + color + ';border:1px solid ' + border + ';font-family:\'Archivo\';font-size:14px;line-height:1.5;max-width:100%' + ws + '">' + (u ? esc(m.text) : mdToHtml(m.text)) + '</div>'
+          : "";
+        return '<div data-mi="' + mi + '" style="display:flex;flex-direction:column;gap:5px;align-items:' + (u ? "flex-end" : "flex-start") + ';align-self:' + align + ';max-width:92%">' + labelHtml + think + bubble + '</div>';
       }).join("");
       $("[data-chat-delete]").style.display = state.messages.length ? "grid" : "none";
     }
@@ -132,30 +161,27 @@
     function onKey(e) { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } }
     function askQuick(q) { state.input = q; var i = $("[data-chat-input]"); if (i) i.value = q; sendMsg(); }
 
+    // Word-by-word reveal for the non-streaming fallback path. Assumes an
+    // assistant turn was already pushed by sendMsg().
     function streamReply(full) {
-      state.messages.push({ role: "assistant", text: "" });
-      setTyping(false);
-      renderMessages(); scrollChat();
+      setStage("Generating");
       var parts = String(full).split(/(\s+)/);
       var i = 0;
       clearInterval(streamIv);
       streamIv = setInterval(function () {
         i++;
-        var partial = parts.slice(0, i).join("");
-        var m = state.messages;
-        if (m.length) m[m.length - 1] = { role: "assistant", text: partial };
-        renderMessages(); scrollChat();
-        if (i >= parts.length) { clearInterval(streamIv); streaming = false; persist(); }
+        updateAssistant(parts.slice(0, i).join(""));
+        if (i >= parts.length) { clearInterval(streamIv); finishThinking(); finishStreaming(); }
       }, 26);
     }
 
     function clearChat() {
       clearInterval(streamIv);
+      clearTimeout(stageT);
       streaming = false;
       var prev = state.conversationId;
       state.messages = []; state.input = ""; state.sending = false; state.confirmDelete = false; state.conversationId = null;
       var inp = $("[data-chat-input]"); if (inp) inp.value = "";
-      forget();
       setTyping(false); renderMessages(); reflectConfirm();
       if (prev) {
         try {
@@ -170,16 +196,47 @@
 
     var FALLBACK_MSG = "I'm having a moment connecting — but you can reach Vatsal directly at " + email + ".";
 
-    function appendAssistant() {
-      state.messages.push({ role: "assistant", text: "" });
+    function lastAssistant() {
+      var m = state.messages;
+      return (m.length && m[m.length - 1].role === "assistant") ? m[m.length - 1] : null;
+    }
+    // Push the assistant turn up front so the reasoning panel can animate while
+    // retrieval + generation run. thinking is finalized in finishThinking().
+    function newAssistantTurn() {
+      state.messages.push({
+        role: "assistant",
+        text: "",
+        thinking: { stage: "Thinking", sources: [], startTs: Date.now(), done: false, collapsed: false },
+      });
       renderMessages(); scrollChat();
+    }
+    function setStage(stage) {
+      var a = lastAssistant();
+      if (a && a.thinking && !a.thinking.done) { a.thinking.stage = stage; renderMessages(); scrollChat(); }
+    }
+    function setSources(list) {
+      var a = lastAssistant();
+      if (a && a.thinking && !a.thinking.done) {
+        a.thinking.sources = list || [];
+        a.thinking.stage = "Reasoning";
+        renderMessages(); scrollChat();
+      }
+    }
+    function finishThinking() {
+      var a = lastAssistant();
+      if (a && a.thinking && !a.thinking.done) {
+        a.thinking.done = true;
+        a.thinking.collapsed = true;
+        a.thinking.elapsedMs = Date.now() - a.thinking.startTs;
+        renderMessages(); scrollChat();
+      }
     }
     function updateAssistant(text) {
-      var m = state.messages;
-      if (m.length && m[m.length - 1].role === "assistant") m[m.length - 1].text = text;
+      var a = lastAssistant();
+      if (a) a.text = text;
       renderMessages(); scrollChat();
     }
-    function finishStreaming() { state.sending = false; streaming = false; persist(); }
+    function finishStreaming() { state.sending = false; streaming = false; clearTimeout(stageT); }
 
     function sendMsg() {
       var text = (state.input || "").trim();
@@ -189,8 +246,11 @@
       state.input = "";
       var inp = $("[data-chat-input]"); if (inp) inp.value = "";
       state.sending = true;
-      persist();
-      renderMessages(); setTyping(true); scrollChat();
+      renderMessages();
+      newAssistantTurn();
+      // if retrieval hasn't reported back quickly, advance the stage locally
+      clearTimeout(stageT);
+      stageT = setTimeout(function () { setStage("Searching"); }, 450);
       streamAnswer(text);
     }
 
@@ -216,6 +276,7 @@
             return reader.read().then(function (res) {
               if (res.done) {
                 if (!ctrl.acc) updateAssistant(FALLBACK_MSG);
+                finishThinking();
                 finishStreaming();
                 return;
               }
@@ -233,15 +294,16 @@
         })
         .catch(function () {
           if (!ctrl.started) fallbackChat(text);  // streaming unsupported/unreachable
-          else { updateAssistant(ctrl.acc || FALLBACK_MSG); finishStreaming(); }
+          else { updateAssistant(ctrl.acc || FALLBACK_MSG); finishThinking(); finishStreaming(); }
         });
     }
 
+    // First token arrived: retrieval/reasoning is done, switch to generating.
     function ensureBubble(ctrl) {
       if (ctrl.started) return;
       ctrl.started = true;
-      setTyping(false);
-      appendAssistant();
+      clearTimeout(stageT);
+      setStage("Generating");
     }
 
     function handleEvent(raw, ctrl) {
@@ -252,7 +314,10 @@
         else if (line.indexOf("data:") === 0) data += line.slice(5).trim();
       });
       if (ev === "meta") {
-        try { var j = JSON.parse(data); if (j.conversation_id) { state.conversationId = j.conversation_id; persist(); } } catch (e) {}
+        try { var j = JSON.parse(data); if (j.conversation_id) { state.conversationId = j.conversation_id; } } catch (e) {}
+      } else if (ev === "sources") {
+        clearTimeout(stageT);
+        try { var s = JSON.parse(data).chunks; if (s && s.length) setSources(s); else setStage("Reasoning"); } catch (e) {}
       } else if (ev === "token") {
         ensureBubble(ctrl);
         try { var t = JSON.parse(data).t; if (t) { ctrl.acc += t; updateAssistant(ctrl.acc); } } catch (e) {}
@@ -276,25 +341,23 @@
       })
         .then(function (r) { if (!r.ok) throw new Error("status " + r.status); return r.json(); })
         .then(function (data) {
-          finishStreaming();
           if (data && data.conversation_id) state.conversationId = data.conversation_id;
           streamReply((data && data.answer) || FALLBACK_MSG);
         })
-        .catch(function () { finishStreaming(); streamReply(FALLBACK_MSG); });
+        .catch(function () { streamReply(FALLBACK_MSG); });
     }
 
     function buildSuggestions() {
       var host = $("[data-chat-suggestions]");
-      var suggestions = [
-        { label: "Best project?", q: "What is Vatsal's most impressive project?" },
-        { label: "Tech stack?", q: "What technologies does Vatsal work with?" },
-        { label: "How to hire?", q: "How can I hire or contact Vatsal?" },
-      ];
-      suggestions.forEach(function (s) {
+      // The visible label IS the sent message — clicking "best project?" shows
+      // exactly "best project?" in the transcript (the backend expands terse
+      // prompts into full portfolio questions on its side).
+      var suggestions = ["best project?", "tech stack?", "how to hire?"];
+      suggestions.forEach(function (q) {
         var b = el("button", { "data-hover": "ask",
           style: "font-family:'JetBrains Mono';font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:#f2f1ea;padding:7px 11px;background:transparent;border:1px solid rgba(242,241,234,.25);border-radius:0;cursor:pointer" });
-        b.textContent = s.label;
-        b.addEventListener("click", function () { askQuick(s.q); });
+        b.textContent = q;
+        b.addEventListener("click", function () { askQuick(q); });
         host.appendChild(b);
       });
     }
@@ -308,8 +371,22 @@
     var inp = $("[data-chat-input]");
     if (inp) { inp.addEventListener("input", onInput); inp.addEventListener("keydown", onKey); }
 
+    // expand / collapse the "Thought for Xs" reasoning panel (event-delegated,
+    // since renderMessages rebuilds the transcript on every token)
+    var msgHost = $("[data-chat-messages]");
+    if (msgHost && !msgHost._tbound) {
+      msgHost._tbound = true;
+      msgHost.addEventListener("click", function (e) {
+        var btn = e.target.closest ? e.target.closest("[data-think-toggle]") : null;
+        if (!btn) return;
+        var wrap = btn.closest("[data-mi]");
+        var mi = wrap ? +wrap.getAttribute("data-mi") : -1;
+        var m = state.messages[mi];
+        if (m && m.thinking) { m.thinking.collapsed = !m.thinking.collapsed; renderMessages(); }
+      });
+    }
+
     buildSuggestions();
-    restore();
     renderMessages();
     // suggestion buttons appeared after main.js bound the cursor — rebind
     var cursorBind = window.VV.getCursorBind && window.VV.getCursorBind();
