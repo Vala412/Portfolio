@@ -10,24 +10,24 @@
 
   // ---------------------------------------------------------------- DATA
   var projects = [
-    { idx: "01", tag: "RAG", shot: "Project Visual", name: "RAG Platform", desc: "Multi-chatbot platform — upload PDFs, docs & URLs to build per-bot knowledge bases. GPT-4o grounded on Pinecone retrieval + reranking.",
-      long: "A production multi-chatbot RAG platform where each user turns their own PDFs, documents and crawled URLs into a per-bot knowledge base — then chats with answers grounded in that context instead of guesswork.",
+    { idx: "01", tag: "RAG", slug: "rag-platform", shot: "Project Visual", name: "RAG Platform", desc: "Multi-chatbot platform — upload PDFs, docs & URLs to build per-bot knowledge bases. GPT-4o grounded on Pinecone retrieval + reranking.",
+      long: "A production multi-chatbot RAG platform where each user turns their own PDFs, documents and crawled URLs into a per-bot knowledge base — then chats with answers grounded in that context instead of guesswork. Every bot is fully isolated: source content is crawled with BeautifulSoup/Requests, OCR'd to clean markdown with Docling, recursively chunked, and embedded with all-MiniLM-L6-v2 into Pinecone, where a top-3 rerank keeps only the most relevant passages before they ever reach the model. GPT-4o then answers strictly from retrieved context, with prompting tuned to cite what it knows and refuse what it doesn't — so every response stays faithful to that user's own documents rather than the model's training data.",
       points: [
         "Ingests PDFs, docs & URLs — crawled via BeautifulSoup/Requests and OCR'd to markdown with Docling.",
         "Retrieval chain: Recursive Character chunking → all-MiniLM-L6-v2 embeddings in Pinecone → rerank to the top-3 chunks.",
         "GPT-4o with optimized prompting answers strictly from retrieved context.",
       ],
       tech: ["Python","FastAPI","Pinecone","all-MiniLM-L6-v2","GPT-4o","Docling","BeautifulSoup"] },
-    { idx: "02", tag: "LLM", shot: "Project Visual", name: "Medical Transcribe", desc: "Two-stage LLM pipeline auto-builds structured medical forms via fuzzy (RapidFuzz) + semantic (FAISS) search. ~15s, 60% fewer tokens.",
-      long: "An AI medical-transcription system that turns raw records into structured forms automatically — re-architected from a single heavy call into a lean two-stage pipeline.",
+    { idx: "02", tag: "LLM", slug: "medical-transcribe", shot: "Project Visual", name: "Medical Transcribe", desc: "Two-stage LLM pipeline auto-builds structured medical forms via fuzzy (RapidFuzz) + semantic (FAISS) search. ~15s, 60% fewer tokens.",
+      long: "An AI medical-transcription system that turns raw records into structured forms automatically — re-architected from a single heavy LLM call into a lean two-stage pipeline that is both faster and dramatically cheaper to run. The first stage extracts medical terms and their permutations; the second maps them onto the correct form fields through a combination of fuzzy matching (RapidFuzz) and semantic search (FAISS), so misspellings and clinical synonyms still land in the right place. The redesign cut end-to-end form generation to ~15 seconds and reduced token usage 60% (25k → 10k per run) without sacrificing accuracy.",
       points: [
         "Two-stage LLM flow extracts medical terms and permutations for matching.",
         "Fuzzy search (RapidFuzz) + semantic search (FAISS) map extracted terms to the right form fields.",
         "Cut end-to-end form generation to ~15s and reduced token usage 60% (25k → 10k).",
       ],
       tech: ["Python","LLM","RapidFuzz","FAISS","FastAPI"] },
-    { idx: "03", tag: "DL", shot: "Project Visual", img: "assets/proj-signassistive.png", name: "SignAssistive", desc: "Real-time Indian Sign Language translator — a 1D CNN reads 47 gestures from MediaPipe hand landmarks at 92% accuracy. Runs fully client-side in TensorFlow.js — the webcam never leaves the device.",
-      long: "A real-time Indian Sign Language recognizer that classifies 47 gestures — 23 letters, 10 digits and 14 common words like HELP, WATER and THANK YOU — entirely in the browser, with no backend.",
+    { idx: "03", tag: "DL", slug: "signassistive", shot: "Project Visual", img: "assets/proj-signassistive.png", name: "SignAssistive", desc: "Real-time Indian Sign Language translator — a 1D CNN reads 47 gestures from MediaPipe hand landmarks at 92% accuracy. Runs fully client-side in TensorFlow.js — the webcam never leaves the device.",
+      long: "A real-time Indian Sign Language recognizer that classifies 47 gestures — 23 letters, 10 digits and 14 common words like HELP, WATER and THANK YOU — entirely in the browser, with no backend and no data ever leaving the device. MediaPipe extracts 21 hand landmarks (63 features) from the webcam, and a lightweight 1D CNN classifies them fast enough for live translation while staying robust to changes in lighting and background. The Keras model was ported to TensorFlow.js by rebuilding the architecture and re-implementing the Python landmark-normalization step line-for-line in JavaScript for exact input parity, and the whole static frontend ships to GitHub Pages through a GitHub Actions CI/CD pipeline — reaching 92% test accuracy.",
       points: [
         "MediaPipe extracts 21 hand landmarks (63 features); a lightweight 1D CNN (Conv1D → MaxPooling → Dense + dropout, softmax) classifies them — fast and robust to lighting & background.",
         "Keras model ported to TensorFlow.js by rebuilding the architecture and re-implementing the Python landmark normalization line-for-line in JS for input parity.",
@@ -37,16 +37,16 @@
       tech: ["Python","TensorFlow/Keras","TensorFlow.js","MediaPipe","OpenCV","scikit-learn","FastAPI","GitHub Actions"],
       demo: "https://vala412.github.io/SignAssistive/translate.html",
       link: "https://github.com/Vala412/SignAssistive" },
-    { idx: "04", tag: "ML", shot: "Project Visual", name: "LogSense", desc: "Hybrid log-classification pipeline — Regex + Sentence Transformers + Logistic Regression, with an LLM fallback for ambiguous logs.",
-      long: "A hybrid log-classification pipeline that routes each log line to the cheapest method that can confidently label it — escalating only when needed.",
+    { idx: "04", tag: "ML", slug: "logsense", shot: "Project Visual", name: "LogSense", desc: "Hybrid log-classification pipeline — Regex + Sentence Transformers + Logistic Regression, with an LLM fallback for ambiguous logs.",
+      long: "A hybrid log-classification pipeline that routes each log line to the cheapest method that can confidently label it, escalating only when necessary. Well-structured, known patterns are caught instantly by regex; everything else is classified from embeddings using Sentence Transformers with a Logistic Regression head; and only genuinely ambiguous or previously unseen logs fall through to an LLM. The result is a tiered system that keeps cost and latency low on the common case while still handling the long tail of messy, unfamiliar logs intelligently.",
       points: [
         "Regex handles known, well-structured patterns instantly.",
         "Sentence Transformers + Logistic Regression classify the rest from embeddings.",
         "An LLM fallback resolves ambiguous or previously unseen logs.",
       ],
       tech: ["Python","Regex","Sentence Transformers","Logistic Regression","LLM"] },
-    { idx: "05", tag: "RAG", shot: "Project Visual", img: "assets/proj-dhanvantari.png", name: "Dhanvantari", desc: "Full-stack RAG health assistant grounded in 15+ classical Ayurvedic texts — cites the source book per answer. Includes a Prakruti (Vata/Pitta/Kapha) analyzer.",
-      long: "A full-stack RAG web app that answers Ayurvedic health questions by grounding an LLM in 15+ classical texts — Charaka Samhita, the Ayurvedic Pharmacopoeia of India, Dr. Vasant Lad's works and more — citing the originating book instead of hallucinating.",
+    { idx: "05", tag: "RAG", slug: "dhanvantari", shot: "Project Visual", img: "assets/proj-dhanvantari.png", name: "Dhanvantari", desc: "Full-stack RAG health assistant grounded in 15+ classical Ayurvedic texts — cites the source book per answer. Includes a Prakruti (Vata/Pitta/Kapha) analyzer.",
+      long: "A full-stack RAG web app that answers Ayurvedic health questions by grounding an LLM in 15+ classical texts — Charaka Samhita, the Ayurvedic Pharmacopoeia of India, Dr. Vasant Lad's works and more — citing the originating book per answer instead of hallucinating. Offline, the corpus is ingested with PyPDFLoader, chunked (500 chars / 50 overlap), embedded with all-MiniLM-L6-v2 and stored in FAISS; online, a LangChain RetrievalQA chain feeds the top-k passages and a custom system prompt to Mistral-7B-Instruct, which streams answers with source citations and session-based memory across follow-ups. Model choice was metric-driven — Mistral-7B, Zephyr-7B, Gemma-7B and GPT-3.5 were benchmarked with RAGAS and Mistral-7B won on faithfulness (0.86) — and a Prakruti analyzer profiles Vata/Pitta/Kapha constitution for personalized guidance. A Grand Finalist project at the SSIP New India Vibrant Hackathon.",
       points: [
         "Offline ingestion: Ayurvedic PDFs (PyPDFLoader) → 500-char chunks (50 overlap) → all-MiniLM-L6-v2 embeddings stored in a FAISS vector store.",
         "Online query: top-k retrieval + a custom system prompt through a LangChain RetrievalQA chain, answered by Mistral-7B-Instruct with streamed source citations.",
@@ -56,8 +56,8 @@
       ],
       tech: ["Python","LangChain","Chainlit","Mistral-7B","FAISS","HuggingFace","RAGAS","React","TypeScript","Vite","Tailwind CSS","Recoil","Socket.IO"],
       link: "https://github.com/Vala412/Dhanvantari" },
-    { idx: "06", tag: "RAG", shot: "Project Visual", img: "assets/proj-equitynews.png", name: "EquityNews.AI", desc: "News research tool — paste article URLs, ask questions, get grounded answers with citations to the sources. A classic FAISS + LangChain RAG pipeline.",
-      long: "An AI research assistant for news: paste in article URLs (e.g. equity/stock-market news), ask questions in plain language, and get answers grounded in the actual articles with citations back to each source — verifiable, not a generic LLM guess.",
+    { idx: "06", tag: "RAG", slug: "equitynews", shot: "Project Visual", img: "assets/proj-equitynews.png", name: "EquityNews.AI", desc: "News research tool — paste article URLs, ask questions, get grounded answers with citations to the sources. A classic FAISS + LangChain RAG pipeline.",
+      long: "An AI research assistant for news: paste in article URLs (e.g. equity/stock-market news), ask questions in plain language, and get answers grounded in the actual articles with citations back to each source — verifiable, not a generic LLM guess. It loads up to three URLs with UnstructuredURLLoader, splits them into ~1000-char chunks, embeds them with 384-dim all-MiniLM-L6-v2 and indexes them in a FAISS store persisted to disk; at query time it retrieves the closest chunks and answers through a RetrievalQAWithSourcesChain powered by Flan-T5-large, returning the source URLs alongside the answer. It's cost-conscious by design — built entirely on free, self-hostable HuggingFace models instead of paid APIs — and wrapped in a pure-Python Streamlit UI.",
       points: [
         "Ingestion: loads up to 3 URLs (UnstructuredURLLoader) → ~1000-char chunks → 384-dim all-MiniLM-L6-v2 embeddings indexed in FAISS and persisted to disk.",
         "Query: embeds the question, retrieves the closest chunks via FAISS similarity search, and answers with Flan-T5-large through a RetrievalQAWithSourcesChain — returning the source URLs.",
@@ -263,11 +263,13 @@
     bindHover($("[data-modal-link]"));
     if (FX.bindCursorHover) FX.bindCursorHover(document);
     reflectModal();
+    document.title = p.name + " — Vatsal Vala";
     document.body.style.overflow = "hidden";
   }
   function closeDetail() {
     FX.detailOpen = false;
     reflectModal();
+    document.title = "Vatsal Vala — AI / ML Engineer";
     document.body.style.overflow = "";
   }
   function reflectModal() {
@@ -275,15 +277,15 @@
     if (!m) return;
     if (FX.detailOpen) {
       m.style.opacity = "1"; m.style.pointerEvents = "auto";
-      if (card) { card.style.transform = "translateY(0) scale(1)"; card.scrollTop = 0; }
+      if (card) { card.style.transform = "translateY(0)"; card.scrollTop = 0; }
     } else {
       m.style.opacity = "0"; m.style.pointerEvents = "none";
-      if (card) { card.style.transform = "translateY(30px) scale(.96)"; }
+      if (card) { card.style.transform = "translateY(24px)"; }
     }
   }
 
   // ---------------------------------------------------------------- ACTIONS (main-owned)
-  var ACTIONS = { scrollDown: scrollDown, closeDetail: closeDetail };
+  var ACTIONS = { scrollDown: scrollDown, closeDetail: closeProject };
   function bindActions() {
     $all("[data-action]").forEach(function (n) {
       var fn = ACTIONS[n.getAttribute("data-action")];
@@ -311,24 +313,17 @@
 
 
   // ---------------------------------------------------------------- NAV WIPE TRANSITIONS
-  function wipeTo(target) {
-    var el = $(target);
-    if (!el) return;
+  // Play the column-wipe; run `atCover` at the moment the screen is fully covered.
+  function playWipe(atCover) {
     var wipe = $("[data-wipe]");
-    var jump = function () {
-      var y = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo(0, y);
-      FX.sy = y; FX.vel = 0;
-      try { applyFx(); } catch (e) {}
-    };
-    if (!wipe || FX.reduced || FX._wiping) { jump(); return; }
+    if (!wipe || FX.reduced || FX._wiping) { if (atCover) atCover(); return; }
     FX._wiping = true;
     var cols = $all(".wipe-col", wipe);
     cols.forEach(function (c, i) { c.style.transitionDelay = (i * 0.055) + "s"; });
     wipe.classList.add("active");
     requestAnimationFrame(function () { wipe.classList.add("covering"); });
     setTimeout(function () {
-      jump();
+      if (atCover) atCover();
       wipe.classList.remove("covering");
       wipe.classList.add("leaving");
       setTimeout(function () {
@@ -337,6 +332,49 @@
         FX._wiping = false;
       }, 720);
     }, 700);
+  }
+  function wipeTo(target) {
+    var el = $(target);
+    if (!el) return;
+    playWipe(function () {
+      var y = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, y);
+      FX.sy = y; FX.vel = 0;
+      try { applyFx(); } catch (e) {}
+    });
+  }
+
+  // ---------------------------------------------------------------- ROUTER (project pages)
+  // Each project card navigates to /work/<slug> as a real URL (History API),
+  // rendered as a full-screen page. Deep-links and the browser Back button work.
+  var didInAppNav = false;
+  function slugToIndex(slug) {
+    for (var i = 0; i < projects.length; i++) { if (projects[i].slug === slug) return i; }
+    return -1;
+  }
+  function routeSlug() {
+    var m = location.pathname.match(/^\/work\/([A-Za-z0-9_-]+)\/?$/);
+    return m ? m[1] : null;
+  }
+  // Reflect the current URL into the view (no transition).
+  function syncRoute() {
+    var slug = routeSlug();
+    var i = slug ? slugToIndex(slug) : -1;
+    if (i >= 0) openDetail(i);
+    else closeDetail();
+  }
+  // Push a new URL and animate the swap through the column wipe.
+  function navigateTo(path) {
+    if (location.pathname === path) return;
+    didInAppNav = true;
+    history.pushState({}, "", path);
+    playWipe(syncRoute);
+  }
+  function openProject(idx) { navigateTo("/work/" + projects[idx].slug); }
+  function closeProject() {
+    if (!routeSlug()) { closeDetail(); return; }
+    if (didInAppNav) { history.back(); }       // popstate → playWipe(syncRoute)
+    else { navigateTo("/"); }
   }
 
   function scrollDown() {
@@ -585,7 +623,7 @@
       drag = false; c.style.cursor = "grab";
       window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up);
       window.removeEventListener("touchmove", move); window.removeEventListener("touchend", up);
-      if (!moved) openDetail(idx);
+      if (!moved) openProject(idx);
     }
     c.addEventListener("mousedown", down);
     c.addEventListener("touchstart", down, { passive: false });
@@ -734,6 +772,10 @@
     // cards, socials & modal-link were added after first cursor bind — rebind
     bindCursorHover(document);
     FX.magnets = $all("[data-magnet]");
+
+    // routing: Back/Forward buttons animate through the wipe; honor deep-links
+    window.addEventListener("popstate", function () { playWipe(syncRoute); });
+    syncRoute();  // if loaded directly on /work/<slug>, show that project now
 
     window.addEventListener("resize", function () {
       FX.vh = window.innerHeight;
