@@ -14,9 +14,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.4"
-      # Lock CORS to your live site (comma-separate to add more origins).
+      # Lock CORS to your live site(s) (comma-separated).
       - key: ALLOWED_ORIGINS
-        value: "https://vatsalvala.dev"
+        value: "https://vatsalvala.netlify.app,https://vatsalvala.dev"
       # Secrets — set these in the Render dashboard (never commit them).
       - key: OPENAI_API_KEY
         sync: false
