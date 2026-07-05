@@ -8,22 +8,92 @@
    ============================================================ */
 (function () {
 
-  // ----- backend chat endpoint (FastAPI). Override with ?api=... if needed. -----
+  // ----- backend chat endpoint (FastAPI) -----
+  // Resolution order: (1) ?api=... query override, (2) localhost during dev,
+  // (3) the hosted backend in production. After you deploy the backend to
+  // Render, replace PROD_API_URL below with your service URL (no trailing slash).
+  var PROD_API_URL = "https://REPLACE_WITH_YOUR_RENDER_URL.onrender.com";
   var API_URL = (function () {
     try {
       var q = new URLSearchParams(location.search).get("api");
       if (q) return q.replace(/\/$/, "");
     } catch (e) {}
-    return "http://localhost:8000";
+    var host = location.hostname;
+    if (host === "localhost" || host === "127.0.0.1" || host === "") return "http://localhost:8000";
+    return PROD_API_URL.replace(/\/$/, "");
   })();
 
   var state = { chatOpen: false, input: "", sending: false, messages: [], confirmDelete: false, conversationId: null };
   var streaming = false;
   var streamIv = null;
 
+  // ----- persist the transcript so memory survives a page refresh -----
+  var LS_KEY = "vv_chat_v1";
+  function persist() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ cid: state.conversationId, messages: state.messages })); } catch (e) {}
+  }
+  function restore() {
+    try {
+      var r = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+      if (r && r.messages && r.messages.length) { state.messages = r.messages; state.conversationId = r.cid || null; }
+    } catch (e) {}
+  }
+  function forget() { try { localStorage.removeItem(LS_KEY); } catch (e) {} }
+
   function init() {
     var VV = window.VV;
     var $ = VV.$, $all = VV.$all, el = VV.el, esc = VV.esc, email = VV.email;
+
+    // ----- minimal, safe Markdown → HTML (escape first, then format) -----
+    function mdInline(s) {
+      s = s.replace(/`([^`]+)`/g, function (_, c) {
+        return '<code style="font-family:\'JetBrains Mono\';font-size:.88em;background:rgba(197,248,42,.14);border:1px solid rgba(197,248,42,.3);padding:1px 5px">' + c + '</code>';
+      });
+      s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, function (_, t, u) {
+        return '<a href="' + u + '" target="_blank" rel="noopener" style="color:#c5f82a">' + t + '</a>';
+      });
+      s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      s = s.replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, "$1<em>$2</em>");
+      return s;
+    }
+    function mdToHtml(src) {
+      var escd = esc(String(src == null ? "" : src));
+      var blocks = [];
+      escd = escd.replace(/```([\s\S]*?)```/g, function (_, code) {
+        blocks.push(code.replace(/^\n/, "").replace(/\n$/, ""));
+        return "§CB" + (blocks.length - 1) + "§";
+      });
+      var lines = escd.split(/\n/), out = "", listTag = null;
+      function closeList() { if (listTag) { out += "</" + listTag + ">"; listTag = null; } }
+      for (var i = 0; i < lines.length; i++) {
+        var ln = lines[i], m;
+        if ((m = ln.match(/^§CB(\d+)§$/))) {
+          closeList();
+          out += '<pre style="font-family:\'JetBrains Mono\';font-size:12px;line-height:1.5;background:rgba(242,241,234,.06);border:1px solid rgba(242,241,234,.18);padding:11px 12px;overflow-x:auto;margin:8px 0;white-space:pre-wrap">' + blocks[+m[1]] + "</pre>";
+          continue;
+        }
+        if (/^\s*$/.test(ln)) { closeList(); continue; }
+        if ((m = ln.match(/^(#{1,4})\s+(.*)$/))) {
+          closeList();
+          out += '<div style="font-family:\'Archivo\';font-weight:900;font-size:15px;margin:10px 0 4px;text-transform:uppercase;letter-spacing:-0.01em">' + mdInline(m[2]) + "</div>";
+          continue;
+        }
+        if ((m = ln.match(/^\s*[-*+]\s+(.*)$/))) {
+          if (listTag !== "ul") { closeList(); out += '<ul style="margin:6px 0;padding-left:20px">'; listTag = "ul"; }
+          out += "<li style=\"margin:3px 0\">" + mdInline(m[1]) + "</li>";
+          continue;
+        }
+        if ((m = ln.match(/^\s*\d+\.\s+(.*)$/))) {
+          if (listTag !== "ol") { closeList(); out += '<ol style="margin:6px 0;padding-left:22px">'; listTag = "ol"; }
+          out += "<li style=\"margin:3px 0\">" + mdInline(m[1]) + "</li>";
+          continue;
+        }
+        closeList();
+        out += '<p style="margin:0 0 7px">' + mdInline(ln) + "</p>";
+      }
+      closeList();
+      return out;
+    }
 
     function toggleChat() { state.chatOpen = !state.chatOpen; reflectChat(); }
     function reflectChat() {
@@ -44,7 +114,9 @@
         var bg = u ? "#c5f82a" : "rgba(242,241,234,.06)";
         var color = u ? "#0b0b0b" : "#f2f1ea";
         var border = u ? "#c5f82a" : "rgba(242,241,234,.18)";
-        return '<div style="align-self:' + align + ';max-width:86%;padding:13px 15px;background:' + bg + ';color:' + color + ';border:1px solid ' + border + ';font-family:\'Archivo\';font-size:14px;line-height:1.5;white-space:pre-wrap">' + esc(m.text) + '</div>';
+        var ws = u ? ";white-space:pre-wrap" : "";
+        var body = u ? esc(m.text) : mdToHtml(m.text);
+        return '<div style="align-self:' + align + ';max-width:86%;padding:13px 15px;background:' + bg + ';color:' + color + ';border:1px solid ' + border + ';font-family:\'Archivo\';font-size:14px;line-height:1.5' + ws + '">' + body + '</div>';
       }).join("");
       $("[data-chat-delete]").style.display = state.messages.length ? "grid" : "none";
     }
@@ -73,7 +145,7 @@
         var m = state.messages;
         if (m.length) m[m.length - 1] = { role: "assistant", text: partial };
         renderMessages(); scrollChat();
-        if (i >= parts.length) { clearInterval(streamIv); streaming = false; }
+        if (i >= parts.length) { clearInterval(streamIv); streaming = false; persist(); }
       }, 26);
     }
 
@@ -83,6 +155,7 @@
       var prev = state.conversationId;
       state.messages = []; state.input = ""; state.sending = false; state.confirmDelete = false; state.conversationId = null;
       var inp = $("[data-chat-input]"); if (inp) inp.value = "";
+      forget();
       setTyping(false); renderMessages(); reflectConfirm();
       if (prev) {
         try {
@@ -106,7 +179,7 @@
       if (m.length && m[m.length - 1].role === "assistant") m[m.length - 1].text = text;
       renderMessages(); scrollChat();
     }
-    function finishStreaming() { state.sending = false; streaming = false; }
+    function finishStreaming() { state.sending = false; streaming = false; persist(); }
 
     function sendMsg() {
       var text = (state.input || "").trim();
@@ -116,6 +189,7 @@
       state.input = "";
       var inp = $("[data-chat-input]"); if (inp) inp.value = "";
       state.sending = true;
+      persist();
       renderMessages(); setTyping(true); scrollChat();
       streamAnswer(text);
     }
@@ -178,7 +252,7 @@
         else if (line.indexOf("data:") === 0) data += line.slice(5).trim();
       });
       if (ev === "meta") {
-        try { var j = JSON.parse(data); if (j.conversation_id) state.conversationId = j.conversation_id; } catch (e) {}
+        try { var j = JSON.parse(data); if (j.conversation_id) { state.conversationId = j.conversation_id; persist(); } } catch (e) {}
       } else if (ev === "token") {
         ensureBubble(ctrl);
         try { var t = JSON.parse(data).t; if (t) { ctrl.acc += t; updateAssistant(ctrl.acc); } } catch (e) {}
@@ -235,6 +309,7 @@
     if (inp) { inp.addEventListener("input", onInput); inp.addEventListener("keydown", onKey); }
 
     buildSuggestions();
+    restore();
     renderMessages();
     // suggestion buttons appeared after main.js bound the cursor — rebind
     var cursorBind = window.VV.getCursorBind && window.VV.getCursorBind();

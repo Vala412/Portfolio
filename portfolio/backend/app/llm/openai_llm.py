@@ -83,9 +83,13 @@ class OpenAILLM:
                 "Retrieved portfolio context:\n"
                 f"{self._format_context(context_chunks)}\n\n"
                 f"Question: {query.strip()}\n\n"
-                "Answer using only the retrieved context above, in 2-5 sentences. "
-                "If the context lacks the answer, say so plainly and point to the "
-                f"contact email ({self.settings.contact_email})."
+                "Use the retrieved context above as the source of truth for anything about "
+                f"{self.settings.assistant_name}. If this is a question about him and the context "
+                f"lacks the answer, say so plainly and point to the contact email "
+                f"({self.settings.contact_email}). If it is a general technology, AI/ML, or "
+                "programming question, answer helpfully from your own knowledge and tie it back to "
+                "his work where relevant. Keep it concise (2-5 sentences) and use Markdown "
+                "formatting when it helps."
             ),
         })
         return messages
