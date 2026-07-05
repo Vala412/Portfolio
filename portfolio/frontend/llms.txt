@@ -1,0 +1,84 @@
+# Vatsal Vala — AI / ML Engineer
+
+> Vatsal Vala is an AI/ML Engineer based in Ahmedabad, India, building production AI systems: retrieval-augmented generation (RAG) pipelines, multi-stage LLM orchestration, vector search, and computer vision. He specializes in making models work outside the notebook — real documents, real users, and real token budgets.
+
+## About
+- Name: Vatsal Vala
+- Title: AI/ML Engineer (AI/ML Developer, LLM / Generative AI Engineer)
+- Location: Ahmedabad, Gujarat, India
+- Email: vatsalvala46@gmail.com
+- GitHub: https://github.com/Vala412
+- LinkedIn: https://www.linkedin.com/in/vatsal-vala
+- Specialties: Retrieval-Augmented Generation, LLM orchestration, prompt engineering, vector databases (Pinecone, FAISS, Qdrant), embeddings & reranking, OCR ingestion, token & cost optimization, computer vision
+- Status: Open to work
+
+## Selected work
+Six projects — production AI systems plus award-winning and open-source work:
+
+### RAG Platform — production multi-chatbot RAG — https://vatsalvala.dev/work/rag-platform
+A production multi-chatbot RAG platform where each user turns their own PDFs, documents and crawled URLs into a per-bot, fully isolated knowledge base. Content is crawled (BeautifulSoup/Requests), OCR'd to markdown (Docling), recursively chunked, embedded with all-MiniLM-L6-v2 into Pinecone, reranked to the top-3 chunks, and answered by GPT-4o strictly from retrieved context.
+- Domain: Retrieval-Augmented Generation
+- Where: Vivansh Infotech
+- Stack: Python, FastAPI, Pinecone, all-MiniLM-L6-v2, GPT-4o, Docling, BeautifulSoup
+
+### Medical Transcribe — AI medical transcription — https://vatsalvala.dev/work/medical-transcribe
+An AI medical-transcription system that auto-generates structured forms from raw records, re-architected from a single heavy LLM call into a lean two-stage pipeline. Stage one extracts medical terms and permutations; stage two maps them to form fields via fuzzy (RapidFuzz) and semantic (FAISS) search. Cut form generation to ~15s and reduced token usage 60% (25k → 10k).
+- Domain: Multi-stage LLM orchestration
+- Where: Vivansh Infotech
+- Stack: Python, LLM, RapidFuzz, FAISS, FastAPI
+
+### SignAssistive — real-time Indian Sign Language translator — https://vatsalvala.dev/work/signassistive
+A real-time Indian Sign Language recognizer classifying 47 gestures (23 letters, 10 digits, 14 words) fully client-side in the browser. MediaPipe extracts 21 hand landmarks (63 features); a lightweight 1D CNN classifies them at 92% accuracy. The Keras model was ported to TensorFlow.js with line-for-line normalization parity; the webcam feed never leaves the device.
+- Domain: Computer vision · on-device ML
+- Demo: https://vala412.github.io/SignAssistive/translate.html
+- GitHub: https://github.com/Vala412/SignAssistive
+- Stack: Python, TensorFlow/Keras, TensorFlow.js, MediaPipe, OpenCV, scikit-learn, FastAPI, GitHub Actions
+
+### LogSense — hybrid log classification — https://vatsalvala.dev/work/logsense
+A tiered log-classification pipeline that routes each log to the cheapest method that can confidently label it: regex for known patterns, Sentence Transformers + Logistic Regression for the rest, and an LLM fallback for ambiguous or unseen logs — keeping cost and latency low on the common case.
+- Domain: ML pipelines · classification
+- Stack: Python, Regex, Sentence Transformers, Logistic Regression, LLM
+
+### Dhanvantari — RAG Ayurvedic health assistant — https://vatsalvala.dev/work/dhanvantari
+A full-stack RAG web app answering Ayurvedic health questions grounded in 15+ classical texts (Charaka Samhita, the Ayurvedic Pharmacopoeia of India, Dr. Vasant Lad's works), citing the source book per answer. FAISS retrieval + LangChain RetrievalQA + Mistral-7B-Instruct (chosen via RAGAS benchmarking, 0.86 faithfulness), with a Vata/Pitta/Kapha Prakruti analyzer. Grand Finalist, SSIP New India Vibrant Hackathon.
+- Domain: Retrieval-Augmented Generation
+- Where: SSIP Hackathon — Grand Finalist
+- GitHub: https://github.com/Vala412/Dhanvantari
+- Stack: Python, LangChain, Chainlit, Mistral-7B, FAISS, HuggingFace, RAGAS, React, TypeScript, Vite, Tailwind CSS
+
+### EquityNews.AI — news research RAG tool — https://vatsalvala.dev/work/equitynews
+An AI research assistant for news: paste article URLs, ask questions, get answers grounded in the actual articles with citations to each source. Built cost-consciously on free, self-hostable HuggingFace models — UnstructuredURLLoader → all-MiniLM-L6-v2 → FAISS → Flan-T5-large via RetrievalQAWithSourcesChain, in a pure-Python Streamlit UI.
+- Domain: Retrieval-Augmented Generation
+- GitHub: https://github.com/Vala412/EquityNews.AI
+- Stack: Python, LangChain, Streamlit, HuggingFace, FAISS, Sentence-Transformers, Flan-T5
+
+## Experience
+- Vivansh Infotech (2026 — present): AI/ML Developer, Ahmedabad. Built a multi-chatbot RAG platform (per-bot knowledge bases from PDFs/docs/URLs) and an AI medical-transcription system (two-stage LLM pipeline, ~15s form generation, 60% fewer tokens). Owns the full retrieval chain — chunking, embeddings, Pinecone, reranking, and prompt engineering for context-grounded GPT-4o responses.
+
+## Recognition
+- SSIP New India Vibrant Hackathon — Grand Finalist (Dhanvantari, Ayurvedic AI assistant).
+- Hack the Mountains — Dhanvantari.
+- SignAssistive — real-time sign-language translator at 92% accuracy.
+
+## Education
+- Bachelor of Engineering — AI & Data Science, GEC Rajkot (2022—2026), CPI 8.05 / CGPA 8.29.
+
+## Skills
+- GenAI & LLMs: RAG, prompt engineering, fine-tuning, LangChain, LlamaIndex, LangGraph, LangFuse, semantic & fuzzy search, chunking strategies, token & cost optimization
+- Vector DBs & embeddings: Pinecone, FAISS, Qdrant, text-embedding-3-large, Cohere embed-v4, BAAI BGE-M3, all-MiniLM-L6-v2
+- Reranking & OCR: bge-reranker-v2, ms-marco-MiniLM, pinecone-rerank-v0, Docling, Tesseract, PaddleOCR, EasyOCR
+- ML & CV: supervised/unsupervised learning, NLP, Sentence Transformers, deep learning, TensorFlow, OpenCV, scikit-learn
+- Languages & web: Python, SQL, Java, JavaScript, Django, FastAPI
+
+## Pages
+- Home: https://vatsalvala.dev/
+- About: https://vatsalvala.dev/#about
+- Experience: https://vatsalvala.dev/#experience
+- Work: https://vatsalvala.dev/#work
+- Skills: https://vatsalvala.dev/#skills
+- Education & Awards: https://vatsalvala.dev/#education
+- Contact: https://vatsalvala.dev/#contact
+- Sitemap: https://vatsalvala.dev/sitemap.xml
+
+## Contact
+Email Vatsal Vala at vatsalvala46@gmail.com for AI/ML engineering work — RAG systems, LLM applications, and GenAI product development. Open to work.
