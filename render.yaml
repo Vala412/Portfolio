@@ -1,0 +1,24 @@
+# Render Blueprint — free FastAPI backend for the portfolio chatbot.
+# Deploy: push this repo to GitHub → Render → "New +" → "Blueprint" → pick the repo.
+# Set the two secret env vars (OPENAI_API_KEY, PINECONE_API_KEY) when prompted.
+services:
+  - type: web
+    name: vatsal-portfolio-api
+    runtime: python
+    plan: free
+    rootDir: portfolio/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.4"
+      # Lock CORS to your live site (comma-separate to add more origins).
+      - key: ALLOWED_ORIGINS
+        value: "https://vatsalvala.dev"
+      # Secrets — set these in the Render dashboard (never commit them).
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
